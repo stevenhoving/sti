@@ -1,2 +1,2 @@
-# sti
-Simple Template Image Library
+# Simple Template Image Library (the L is silent)
+
