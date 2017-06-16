@@ -10,6 +10,7 @@ add_unit_test_suite(
         test_image.cpp
         test_png_codec.cpp
         stop_watch.h
+        load_file_fixture.h
     INCLUDES
         ${CMAKE_BINARY_DIR}
     LIBRARIES sti

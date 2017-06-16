@@ -1,18 +1,11 @@
-#include <sti/codecs/codec_png.h>
-#include <sti/color_image.hpp>
+#include "load_file_fixture.h"
 #include <sti/convert/convert_image.hpp>
-#include <aeon/streams/file_stream.h>
-
 #include <gtest/gtest.h>
 #include <build_config.h>
 
-TEST(test_png_codec, decode_image)
+TEST_F(load_file_fixture, decode_image)
 {
-    auto stream = aeon::streams::file_stream(STI_TEST_DATA_PATH "/DSC_7000.png");
-    auto image = sti::color_image();
-    ASSERT_NO_THROW(image = sti::codecs::png::decode(stream));
-
-    auto &info = image.info();
+    auto &info = loaded_image.info();
 
     EXPECT_EQ(256, info.width);
     EXPECT_EQ(171, info.height);
@@ -21,58 +14,42 @@ TEST(test_png_codec, decode_image)
     EXPECT_EQ(info.width * (info.bits >> 3) * 4, info.stride);
 }
 
-TEST(test_png_codec, decode_encode_image)
+TEST_F(load_file_fixture, decode_encode_image)
 {
-    auto stream = aeon::streams::file_stream(STI_TEST_DATA_PATH "/DSC_7000.png");
-    auto image = sti::color_image();
-    ASSERT_NO_THROW(image = sti::codecs::png::decode(stream));
-
-    auto output_stream = aeon::streams::file_stream("DSC_7000_encoded.png", aeon::streams::access_mode::write |
-                                                                                aeon::streams::access_mode::truncate);
-    sti::codecs::png::encode(image, output_stream);
+    write_result("DSC_7000_encoded.png", loaded_image);
 }
 
-TEST(test_png_codec, decode_and_convert_to_image)
+TEST_F(load_file_fixture, decode_and_convert_to_image)
 {
-    auto stream = aeon::streams::file_stream(STI_TEST_DATA_PATH "/DSC_7000.png");
-    auto image = sti::color_image();
-    ASSERT_NO_THROW(image = sti::codecs::png::decode(stream));
-
-    auto result = sti::convert_image<std::uint8_t, 4>::from_color_image(image);
+    auto result = sti::convert_image<std::uint8_t>::from_color_image(loaded_image);
     EXPECT_EQ(256, result.width());
     EXPECT_EQ(171, result.height());
 }
 
-TEST(test_png_codec, decode_and_convert_to_image_back_and_export)
+TEST_F(load_file_fixture, decode_and_convert_to_image_back_and_export)
 {
-    auto stream = aeon::streams::file_stream(STI_TEST_DATA_PATH "/DSC_7000.png");
-    auto image = sti::color_image();
-    ASSERT_NO_THROW(image = sti::codecs::png::decode(stream));
+    auto result = sti::convert_image<std::uint8_t>::from_color_image(loaded_image);
+    auto new_color_image = sti::convert_image<std::uint8_t>::to_color_image(result);
 
-    auto result = sti::convert_image<std::uint8_t, 4>::from_color_image(image);
-    EXPECT_EQ(256, result.width());
-    EXPECT_EQ(171, result.height());
-
-    auto new_color_image = sti::convert_image<std::uint8_t, 4>::to_color_image(result);
-
-    auto output_stream = aeon::streams::file_stream("DSC_7000_reencoded.png", aeon::streams::access_mode::write |
-                                                                                  aeon::streams::access_mode::truncate);
-    sti::codecs::png::encode(new_color_image, output_stream);
+    write_result("DSC_7000_reencoded.png", new_color_image);
 }
 
-TEST(test_png_codec, decode_and_convert_to_float_image_back_and_export)
+TEST_F(load_file_fixture, decode_and_convert_to_image_back_and_export_remove_plane)
 {
-    auto stream = aeon::streams::file_stream(STI_TEST_DATA_PATH "/DSC_7000.png");
-    auto image = sti::color_image();
-    ASSERT_NO_THROW(image = sti::codecs::png::decode(stream));
+    auto result = sti::convert_image<std::uint8_t>::from_color_image(loaded_image);
 
-    auto result = sti::convert_image<float, 4>::from_color_image(image);
-    EXPECT_EQ(256, result.width());
-    EXPECT_EQ(171, result.height());
+    result.remove_plane(3);
 
-    auto new_color_image = sti::convert_image<float, 4>::to_color_image(result);
+    auto new_color_image = sti::convert_image<std::uint8_t>::to_color_image(result);
 
-    auto output_stream = aeon::streams::file_stream("DSC_7000_reencoded_domain.png", aeon::streams::access_mode::write |
-        aeon::streams::access_mode::truncate);
-    sti::codecs::png::encode(new_color_image, output_stream);
+    write_result("DSC_7000_reencoded_remove_plane_3.png", new_color_image);
+}
+
+TEST_F(load_file_fixture, decode_and_convert_to_float_image_back_and_export)
+{
+    auto result = sti::convert_image<float>::from_color_image(loaded_image);
+
+    auto new_color_image = sti::convert_image<float>::to_color_image(result);
+
+    write_result("DSC_7000_reencoded_domain.png", new_color_image);
 }

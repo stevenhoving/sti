@@ -13,7 +13,7 @@ namespace filter
 #define MEAN_SHIFT_MAX_ITERATIONS 10
 
 template <typename T>
-void filter_mean_shift(const sti::slice<T> &src, sti::slice<T> &dst, const int spatial_radius,
+void filter_mean_shift(const sti::plane<T> &src, sti::plane<T> &dst, const int spatial_radius,
                        const float color_distance)
 {
     const auto rad = spatial_radius;
@@ -102,8 +102,7 @@ void filter_mean_shift(const sti::slice<T> &src, sti::slice<T> &dst, const int s
 }
 
 template <typename T>
-sti::slice<T> filter_mean_shift_copy(const sti::slice<T> &src, const int spatial_radius,
-                                           const float color_distance)
+sti::plane<T> filter_mean_shift_copy(const sti::plane<T> &src, const int spatial_radius, const float color_distance)
 {
     auto dst = sti::slice<T>(src.width(), src.height());
     filter_mean_shift(src, dst, spatial_radius, color_distance);
@@ -124,7 +123,7 @@ public:
         rad_col2 = rad_col * rad_col;
     }
 
-    virtual T operator()(const sti::slice<T> &src, const int y, const int x) const override final
+    virtual T operator()(const sti::plane<T> &src, const int y, const int x) const override final
     {
         int width = src.width();
         int height = src.height();

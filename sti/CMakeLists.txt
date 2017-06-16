@@ -1,7 +1,7 @@
 
 set(STI_CORE_SOURCES
     src/sti/image.hpp
-    src/sti/slice.hpp
+    src/sti/plane.hpp
     src/sti/color_image.hpp
     src/sti/color_image_info.hpp
     src/sti/utility.hpp

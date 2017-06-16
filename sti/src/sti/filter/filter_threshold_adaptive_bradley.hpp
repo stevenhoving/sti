@@ -1,6 +1,6 @@
 #pragma once
 
-#include <sti/slice.hpp>
+#include <sti/plane.hpp>
 #include <sti/pixel_values.hpp>
 #include <cstdint>
 
@@ -23,8 +23,7 @@ using bradley_intergral_vector_type = std::vector<bradley_intergral_type<T>>;
 // https://github.com/rmtheis/bradley-adaptive-thresholding/raw/master/gerh-50002.pdf
 // \todo parameterize this function: 'block size' and 'threshold'. But to be sure... read the paper.
 template <typename T>
-void filter_threshold_adaptive_bradley(const sti::slice<T> &src, sti::slice<T> &dst, int size,
-                                       float threshold)
+void filter_threshold_adaptive_bradley(const sti::plane<T> &src, sti::plane<T> &dst, int size, float threshold)
 {
     /* create integral image (aka summed-area table) */
     auto intergral_img = bradley_intergral_vector_type<T>();
@@ -92,9 +91,9 @@ void filter_threshold_adaptive_bradley(const sti::slice<T> &src, sti::slice<T> &
 }
 
 template <typename T>
-sti::slice<T> filter_threshold_adaptive_bradley_copy(const sti::slice<T> &src, int size, float threshold)
+sti::plane<T> filter_threshold_adaptive_bradley_copy(const sti::plane<T> &src, int size, float threshold)
 {
-    auto dst = sti::slice<T>(src.width(), src.height());
+    auto dst = sti::plane<T>(src.width(), src.height());
     filter_threshold_adaptive_bradley(src, dst, size, threshold);
     return dst;
 }

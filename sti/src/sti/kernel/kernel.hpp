@@ -20,6 +20,7 @@ public:
     {
         return data_[x];
     }
+
 private:
     std::array<T, Size> data_;
 };
@@ -37,10 +38,10 @@ public:
     {
         return data_[y];
     }
+
 private:
     std::array<T, Size> data_;
 };
-
 
 /*!
  * convolution story.
