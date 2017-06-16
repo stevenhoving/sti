@@ -17,5 +17,11 @@ inline const T align_up(const T size, const T align)
     return ((size + (align - 1)) & ~(align - 1));
 }
 
+template <typename T>
+inline const T align_down(const T size, const T align)
+{
+    return static_cast<T>(size & ~(align - 1));
+}
+
 } // namespace detail
 } // namespace sti

@@ -104,15 +104,29 @@ public:
     // \todo check the input params
     inline T &at(const int x, const int y)
     {
-        auto index = (y * stride_) + x;
+        const auto index = (y * stride_) + x;
         return data_[index];
     }
 
     // \todo check the input params
     inline const T at(const int x, const int y) const
     {
-        auto index = (y * stride_) + x;
+        const auto index = (y * stride_) + x;
         return data_[index];
+    }
+
+    float equal_pct(const image<T> &other)
+    {
+        if (width_ != other.width_ || height_ != other.height_ || stride_ != other.stride_)
+            return 0.f;
+        int same = 0;
+        for (size_t i = 0; i < data_.size(); ++i)
+        {
+            bool equal = data_[i] == other.data_[i];
+            same += int(equal); // \note promote boolean to int so we can use it in our math
+        }
+
+        return (float(same) / data_.size()) * 100.f;
     }
 private:
     int width_ = 0;
@@ -120,6 +134,12 @@ private:
     int stride_ = 0;
     value_type data_;
 };
+
+template<typename T>
+static bool operator != (const sti::core::image<T> &left, const sti::core::image<T> &right)
+{
+    return !std::equal(std::begin(left), std::end(left), std::begin(right));
+}
 
 template <typename T>
 sti::core::image<T> read(const std::string &filename)

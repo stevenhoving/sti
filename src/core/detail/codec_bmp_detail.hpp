@@ -144,33 +144,6 @@ void save(const uint8_t *src, const int width, const int height, const char *fil
     fclose(filePtr);
 }
 
-#if 0
-void save(sti::histogram &src, const char *filename)
-{
-    auto img = sti::image<uint8_t>(256, 256);
-
-    auto highest = std::max_element(std::begin(src), std::end(src));
-
-    const float div_me = float(*highest) / 255.f;
-    //const float div_me = float(*highest) / 254.f;
-
-    uint8_t * dst = img.data();
-
-    for (int y = int(float(*highest) / div_me); y >= 0; --y)
-    {
-        for (int x = 0; x < 255; ++x)
-        {
-            if (float(src.data[x]) / div_me >= y)
-                *dst++ = 0x0;
-            else
-                *dst++ = 0xFF;
-        }
-    }
-
-    sti::image_codec::bmp::save(img, filename);
-}
-
-#endif
 
 } // namespace bmp
 } // namespace codec

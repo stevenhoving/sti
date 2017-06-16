@@ -6,7 +6,11 @@
 namespace sti {
 namespace core {
 
-// promote/demote any integral type to int, for the rest... just use T
+/* promote/demote any integral type to int, for the rest... just use T
+ *
+ * char and short will get promoted to int and float/double will just pass through.
+ * \todo will fail when we use 64 bit pixels.
+ */
 template<typename T>
 using bradley_intergral_type = typename std::conditional<std::is_integral<T>::value, int, T>::type;
 
@@ -51,8 +55,10 @@ void filter_threshold_adaptive_bradley(const sti::core::image<T> &src, sti::core
             int index = j*src.width() + x;
 
             // set the SxS region
-            int x1 = x - s2; int x2 = x + s2;
-            int y1 = j - s2; int y2 = j + s2;
+            int x1 = x - s2;
+            int x2 = x + s2;
+            int y1 = j - s2;
+            int y2 = j + s2;
 
             // check the border
             if (x1 < 0) x1 = 0;
@@ -68,7 +74,7 @@ void filter_threshold_adaptive_bradley(const sti::core::image<T> &src, sti::core
                 intergral_img[y2*src.width() + x2] - intergral_img[y1*src.width() + x2] -
                 intergral_img[y2*src.width() + x1] + intergral_img[y1*src.width() + x1];
 
-            // \note this is gonna suck for floats and doubles... todo... fix it...
+            // \todo this is gonna suck for floats and doubles...
             //if ((long)(src.data()[index] * count) < (long)(sum * (1.0 - Tr)))
             if ((double)(src.data()[index] * count) < (double)(sum * (1.0 - Tr)))
                 dst.data()[index] = detail::image::pixel_min_value<T>();

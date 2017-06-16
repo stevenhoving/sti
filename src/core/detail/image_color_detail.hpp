@@ -7,7 +7,9 @@ namespace sti
 {
 namespace detail
 {
-// hacky... color image
+/* \note hacky color image class so we can extract a single channel (yuv) from
+ * a jpeg.
+ */
 class image_color
 {
 public:

@@ -13,14 +13,21 @@ sti::core::image<T> apply_filter(const sti::core::image<T>& src, F filter)
     const auto y_max = src.height();
     const auto x_max = src.width();
     auto image = sti::core::image<T>(x_max, y_max);
+    for (int i = 0; i < src.stride() * src.height(); ++i)
+    {
+        int x = i % src.stride();
+        int y = i / src.stride();
+        image.data()[i] = filter(src, y, x);
+    }
 
-    for (int y = 0; y < y_max; ++y)
+    /*for (int y = 0; y < y_max; ++y)
     {
         for (int x = 0; x < x_max; ++x)
         {
             image[y][x] = filter(src, y, x);
         }
     }
+    */
     return image;
 }
 
@@ -85,6 +92,5 @@ void apply_kernel(const sti::image<T>& src, sti::image<T>& dst, K kernel)
 }
 
 #endif
-
 
 } // namespace sti
