@@ -9,7 +9,6 @@
 #include <aeon/streams/file_stream.h>
 #include <build_config.h>
 
-
 TEST(test_filter, test_apply_filter)
 {
     // auto kernel = sti::filter::kernel::lowpass::make_kernel();
@@ -30,11 +29,11 @@ TEST(test_filter, test_apply_filter)
 
     auto kernel = sti::kernel::lowpass::make_kernel<float, 3>();
     sti::filter::apply_kernel(result.get_slice(0), filtered_image.get_slice(0), kernel);
-    
+
     auto new_color_image = sti::convert_image<std::uint8_t, 4>::to_color_image(filtered_image);
 
-    auto output_stream = aeon::streams::file_stream(
-        "DSC_7000_reencoded.png", aeon::streams::access_mode::write | aeon::streams::access_mode::truncate);
+    auto output_stream = aeon::streams::file_stream("DSC_7000_reencoded.png", aeon::streams::access_mode::write |
+                                                                                  aeon::streams::access_mode::truncate);
     sti::codecs::png::encode(new_color_image, output_stream);
 }
 

@@ -9,21 +9,17 @@ namespace kernel
 template <typename T, int Size>
 class kernel
 {
+public:
     using value_type = std::array<T, Size * Size>;
     using iterator = typename value_type::iterator;
     using const_iterator = typename value_type::const_iterator;
 
-public:
     // kernel() = default;
 
-    // how about the power to move you
     // kernel(kernel&& other) = default;
     // kernel & operator=(kernel &&other) = default;
-
-    // we don't want to copy our image, we only want to move it or explicitly clone it
     // kernel(const kernel &) = delete;
     // kernel& operator=(const kernel &) = delete;
-
     inline const int size() const
     {
         return Size;
@@ -46,16 +42,18 @@ public:
         return data_.end();
     }
 
-    // \note this is kinda fucked up....., we should return a memory_view here
-    //       :P but only string_view exists atm.. !!!!!
+    // \note this is kinda bad...., we should return a memory_view here :P
+    //       but only string_view exists atm.. !!!!!
     inline const T *operator[](const int y) const
     {
         return &data_[y * Size];
     }
 
+    // not const because kernel factories will change these values
     T factor = static_cast<T>(1.0);
     T offset = static_cast<T>(0.0);
 
+    /* debug function to log the contents of the kernel to a file pointer */
     void dump(FILE *fp)
     {
         if (!fp)
@@ -65,10 +63,9 @@ public:
         {
             for (int x = 0; x < Size; ++x)
             {
-                // blegh also fucked up...
-                printf("%f ", this->operator[](y)[x]);
+                fprintf(fp, "%f ", static_cast<double>(this->operator[](y)[x]));
             }
-            printf("\n");
+            fprintf(fp, "\n");
         }
     }
 

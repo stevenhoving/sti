@@ -9,8 +9,10 @@ namespace detail
 namespace image_resize
 {
 
-// simple bilinear single channel resize
-// void resize_bilinear(const sti::core::image<T> &pixels, sti::core::image<T> &temp)
+/* simple bilinear single channel resize (take 4 points around the dst pixel and
+//void resize_bilinear(const sti::core::image<T> &pixels, sti::core::image<T> &temp)
+ * \todo use libyuv for this... instead of writing this ourself.
+ */
 static void resize_bilinear(const uint8_t *src, const int src_width, const int src_height, uint8_t *dst,
                             const int dst_width, const int dst_height)
 {

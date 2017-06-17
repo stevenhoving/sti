@@ -46,13 +46,15 @@ static void apply_kernel(const slice<pixel_type_t> &src, slice<pixel_type_t> &ds
                     const auto y1 = utility::clamp(y - k, 0, src.height() - 1);
                     const auto index = (y1 * src.width()) + x1;
 
-                    sum = sum + kernel[j + kernel.size() / 2][k + kernel.size() / 2] * static_cast<float>(src.data()[index]);
+                    sum = sum +
+                          kernel[j + kernel.size() / 2][k + kernel.size() / 2] * static_cast<float>(src.data()[index]);
                 }
             }
             const int index = (y * src.width()) + x;
             float pixel = (kernel.factor * sum) + kernel.offset;
 
-            pixel = utility::clamp<pixel_type_t>(pixel, detail::pixel_min_value<pixel_type_t>(), detail::pixel_max_value<pixel_type_t>());
+            pixel = utility::clamp<pixel_type_t>(pixel, detail::pixel_min_value<pixel_type_t>(),
+                                                 detail::pixel_max_value<pixel_type_t>());
             dst.data()[index] = static_cast<pixel_type_t>(pixel);
         }
     }

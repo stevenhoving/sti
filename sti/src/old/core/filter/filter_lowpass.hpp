@@ -20,7 +20,7 @@ template <typename T>
 sti::core::image<T> filter_lowpass_copy(const sti::core::image<T> &src)
 {
     auto dst = sti::core::image<T>(src.width(), src.height());
-    filter_lowpass(src, dst);
+    filter_lowpass<T>(src, dst);
     return dst;
 }
 
