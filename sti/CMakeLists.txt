@@ -1,6 +1,5 @@
 
 set(STI_CORE_SOURCES
-    src/sti/dummy.cpp # To make cmake build this as a lib...
     src/sti/image.hpp
     src/sti/color_image.hpp
     src/sti/color_image_info.hpp
@@ -8,11 +7,23 @@ set(STI_CORE_SOURCES
 
 source_group(core FILES ${STI_CORE_SOURCES})
 
+set(STI_CODECS_SOURCES
+    src/sti/codecs/codec_png.cpp
+    src/sti/codecs/codec_png.h
+    src/sti/codecs/detail/png_structs.hpp
+    src/sti/codecs/detail/png_read_structs.hpp
+    src/sti/codecs/detail/png_write_structs.hpp
+)
+
+source_group(codecs FILES ${STI_CODECS_SOURCES})
+
 add_library(sti STATIC
     ${STI_CORE_SOURCES}
+    ${STI_CODECS_SOURCES}
 )
 
 target_link_libraries(sti
+    png_static
     aeon_common
     aeon_utility
     aeon_streams

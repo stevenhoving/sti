@@ -1,0 +1,5 @@
+// This is a generated file! Do not modify!
+
+#pragma once
+
+#define STI_TEST_DATA_PATH "@STI_TEST_DATA_PATH@"

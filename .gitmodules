@@ -10,3 +10,11 @@
 	path = dep/libaeon
 	url = ../libaeon.git
 	branch = master
+[submodule "dep/zlib"]
+	path = dep/zlib
+	url = ../zlib.git
+    branch = submodule
+[submodule "dep/png"]
+	path = dep/png
+	url = ../libpng.git
+    branch = submodule

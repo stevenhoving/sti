@@ -34,3 +34,6 @@ endif ()
 
 add_subdirectory(dep)
 add_subdirectory(sti)
+
+set(STI_TEST_DATA_PATH ${CMAKE_SOURCE_DIR}/data )
+configure_file(build_config.h.in ${CMAKE_BINARY_DIR}/build_config.h @ONLY)

@@ -10,31 +10,45 @@ namespace sti
 class color_image
 {
 public:
+    color_image();
     explicit color_image(const image_info &info);
+    explicit color_image(const image_info &info, std::vector<uint8_t> &&buffer);
 
     ~color_image() = default;
 
     color_image(color_image &&other) = default;
-    color_image &operator=(color_image &&other) = default;
+    auto operator=(color_image &&other) -> color_image & = default;
 
     color_image(color_image const &) = delete;
-    color_image &operator=(color_image const &) = delete;
+    auto operator=(color_image const &) -> color_image & = delete;
 
     auto info() const -> const image_info &;
+
     auto size() const;
+
     auto data();
-    auto width() const;
-    auto height() const;
-    auto stride() const;
+    auto data() const;
 
 private:
     image_info info_;
     std::vector<uint8_t> buffer_;
 };
 
+inline color_image::color_image()
+    : info_()
+    , buffer_()
+{
+}
+
 inline color_image::color_image(const image_info &info)
     : info_(info)
     , buffer_(info_.stride * info_.height * info_.bytes_per_pixel)
+{
+}
+
+inline color_image::color_image(const image_info &info, std::vector<uint8_t> &&buffer)
+    : info_(info)
+    , buffer_(std::move(buffer))
 {
 }
 
@@ -53,19 +67,9 @@ inline auto color_image::data()
     return buffer_.data();
 }
 
-inline auto color_image::width() const
+inline auto color_image::data() const
 {
-    return info_.width;
-}
-
-inline auto color_image::height() const
-{
-    return info_.height;
-}
-
-inline auto color_image::stride() const
-{
-    return info_.stride;
+    return buffer_.data();
 }
 
 } // namespace sti
