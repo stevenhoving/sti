@@ -35,7 +35,7 @@ TEST(test_filter, test_apply_filter)
     auto new_color_image = sti::convert_image<std::uint8_t, 4>::to_color_image(filtered_image);
 
     auto output_stream = aeon::streams::file_stream("DSC_7000_filtered.png", aeon::streams::access_mode::write |
-                                                                                  aeon::streams::access_mode::truncate);
+                                                                                 aeon::streams::access_mode::truncate);
     sti::codecs::png::encode(new_color_image, output_stream);
 }
 

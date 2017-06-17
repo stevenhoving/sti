@@ -16,8 +16,8 @@
 ---------------  * 255 = dst
 (white - black)
 */
-static
-void range_i420_sse_c(const uint8_t *src, uint8_t *dst, const int width, const int height, const int black, const int white)
+static void range_i420_sse_c(const uint8_t *src, uint8_t *dst, const int width, const int height, const int black,
+                             const int white)
 {
     const int min_norm = black;
     const int max_norm = white;
@@ -37,8 +37,7 @@ void range_i420_sse_c(const uint8_t *src, uint8_t *dst, const int width, const i
     auto sse_size = sti::detail::align_down(src_size, 16);
 
     int i = 0;
-    __no_unroll
-    for (; i < sse_size;)
+    __no_unroll for (; i < sse_size;)
     {
         auto chunk = _mm_lddqu_si128((__m128i *)&src[i]);
 
@@ -99,7 +98,7 @@ void range_i420_sse_c(const uint8_t *src, uint8_t *dst, const int width, const i
 
         chunk = _mm_packus_epi16(lo, hi);
 
-        _mm_storeu_si128((__m128i*)&dst[i], chunk);
+        _mm_storeu_si128((__m128i *)&dst[i], chunk);
 
         i += 16;
     }
@@ -112,9 +111,7 @@ void range_i420_sse_c(const uint8_t *src, uint8_t *dst, const int width, const i
     }
 }
 
-static
-void range_i420_c(const uint8_t *src, uint8_t *dst, int width, int height,
-    int black, int white)
+static void range_i420_c(const uint8_t *src, uint8_t *dst, int width, int height, int black, int white)
 {
     int min_norm = black;
     int max_norm = white;
