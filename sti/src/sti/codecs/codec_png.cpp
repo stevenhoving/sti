@@ -154,7 +154,7 @@ void png::encode(const color_image &image, aeon::streams::stream &stream)
     // Bind errors from libpng
     AEON_IGNORE_VS_WARNING_PUSH(4611)
     if (setjmp(png_jmpbuf(png_structs.png_ptr())))
-        throw std::runtime_error("Could not decode png image. Error reported by libpng while encoding.");
+        throw std::runtime_error("Could not encode png image. Error reported by libpng while encoding.");
     AEON_IGNORE_VS_WARNING_POP()
 
     const auto &image_info = image.info();
