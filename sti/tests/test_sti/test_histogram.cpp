@@ -1,5 +1,8 @@
 #include <gtest/gtest.h>
 
+
+#if 0
+
 #include <core/image.hpp>
 #include <core/histogram.hpp>
 #include <string>
@@ -16,3 +19,5 @@ TEST(test_histogram, test_write_histogram_image)
     sti::write_image(image, "D:/dev/sti/data/DSC_7000_gray.bmp");
     sti::write_image(histogram_image, "D:/dev/sti/data/histogram.bmp");
 }
+
+#endif
