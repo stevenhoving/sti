@@ -10,6 +10,8 @@ namespace sti
 class color_image final
 {
 public:
+    using pixel_type_t = std::uint8_t;
+
     color_image();
     explicit color_image(const image_info &info);
     explicit color_image(const image_info &info, std::vector<uint8_t> &&buffer);
@@ -31,7 +33,7 @@ public:
 
 private:
     image_info info_;
-    std::vector<uint8_t> buffer_;
+    std::vector<pixel_type_t> buffer_;
 };
 
 inline color_image::color_image()
