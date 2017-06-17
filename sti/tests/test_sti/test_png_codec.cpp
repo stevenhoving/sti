@@ -59,3 +59,20 @@ TEST(test_png_codec, decode_and_convert_to_image_back_and_export)
                                                                                   aeon::streams::access_mode::truncate);
     sti::codecs::png::encode(new_color_image, output_stream);
 }
+
+TEST(test_png_codec, decode_and_convert_to_float_image_back_and_export)
+{
+    auto stream = aeon::streams::file_stream(STI_TEST_DATA_PATH "/DSC_7000.png");
+    auto image = sti::color_image();
+    ASSERT_NO_THROW(image = sti::codecs::png::decode(stream));
+
+    auto result = sti::convert_image<float, 4>::from_color_image(image);
+    EXPECT_EQ(256, result.width());
+    EXPECT_EQ(171, result.height());
+
+    auto new_color_image = sti::convert_image<float, 4>::to_color_image(result);
+
+    auto output_stream = aeon::streams::file_stream("DSC_7000_reencoded_domain.png", aeon::streams::access_mode::write |
+        aeon::streams::access_mode::truncate);
+    sti::codecs::png::encode(new_color_image, output_stream);
+}
