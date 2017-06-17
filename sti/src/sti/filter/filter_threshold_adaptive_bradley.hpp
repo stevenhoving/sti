@@ -71,8 +71,8 @@ void filter_threshold_adaptive_bradley(const sti::slice<T> &src, sti::slice<T> &
                 x2 = src.width() - 1;
             if (y1 < 0)
                 y1 = 0;
-            if (y2 >= src.width())
-                y2 = src.width() - 1;
+            if (y2 >= src.height())
+                y2 = src.height() - 1;
 
             const auto count = (x2 - x1) * (y2 - y1);
 
