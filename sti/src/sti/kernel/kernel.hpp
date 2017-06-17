@@ -63,16 +63,16 @@ public:
     void dump(FILE *fp)
     {
         if (!fp)
-            return; // \todo throw error or something...
+            // \todo report error
+            return;
 
         for (int y = 0; y < Size; ++y)
         {
             for (int x = 0; x < Size; ++x)
             {
-                // blegh also fucked up...
-                printf("%f ", this->operator[](y)[x]);
+                fprintf(fp, "%f ", this->operator[](y)[x]);
             }
-            printf("\n");
+            fprintf(fp, "\n");
         }
     }
 
