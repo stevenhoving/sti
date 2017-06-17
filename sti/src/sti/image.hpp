@@ -69,7 +69,7 @@ image<pixel_type_t, slice_count_t>::image(const int width, const int height, con
                                           std::array<slice_type_t, slice_count_t> &&slices)
     : width_(width)
     , height_(height)
-    , stride_(width)
+    , stride_(stride)
     , slices_(std::move(slices))
 {
 }
