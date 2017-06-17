@@ -33,6 +33,7 @@
 .clang-format
 bin/imgui.ini
 build_deploy
+*.TMP
 
 # OSX
 .DS_Store
