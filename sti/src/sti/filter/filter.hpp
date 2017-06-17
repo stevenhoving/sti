@@ -1,9 +1,8 @@
 #pragma once
 
 #include <sti/slice.hpp>
+#include <sti/pixel_values.hpp>
 #include <sti/utility.hpp>
-#include <sti/image_detail.hpp>
-
 #include <algorithm>
 
 namespace sti
@@ -11,51 +10,58 @@ namespace sti
 namespace filter
 {
 
-template <typename pixel_type_t>
+/* One of my ideas was that as a functional building we would write these
+ * 'filter' objects that we use to get the filter result of a single
+ * destination pixel */
+template <typename T>
 class ifilter
 {
 public:
-    virtual double operator()(const slice<pixel_type_t> &src, const int y, const int x) const = 0;
+    virtual T operator()(const sti::slice<T> &src, const int y, const int x) const = 0;
 };
 
-template <typename pixel_type_t, typename kernel_t>
-static void apply_kernel(const slice<pixel_type_t> &src, slice<pixel_type_t> &dst, const kernel_t &kernel)
+// \note this will get our selfs in a bad situation if somebody starts using 64 bit gray pixels
+template <typename T>
+using clamp_type = typename std::conditional<std::is_integral<T>::value, int, T>::type;
+
+template <typename T, typename K>
+static void apply_kernel(const sti::slice<T> &src, sti::slice<T> &dst, const K &kernel)
 {
     const auto half_kernel_size = kernel.size() / 2;
-    for (auto y = 0; y < src.height(); ++y)
+    for (int y = 0; y < src.height(); ++y)
     {
-        for (auto x = 0; x < src.width(); ++x)
+        for (int x = 0; x < src.width(); ++x)
         {
-            auto sum = 0.0f;
+            float sum = 0.f;
             for (auto k = -half_kernel_size; k <= half_kernel_size; ++k)
             {
                 for (auto j = -half_kernel_size; j <= half_kernel_size; ++j)
                 {
-                    // x1 = circular(src.cols, x - j);
-                    // y1 = circular(src.rows, y - k);
-                    // sum = sum + kernel[j + 1][k + 1] * src.data()[index];
-
-                    // \note we only do clamp... atm... which seems to me as the worst option of all
-
-                    // int x1 = std::max(0, x - j);
-                    // x1 = std::min(x1, src.width()-1);
-                    // int y1 = std::max(0, y - k);
-                    // y1 = std::min(y1, src.height()-1);
-
+                    /* \note we only do clamp... which seems to me a bad option,
+                     *       The reason for this is that pixels that are
+                     *       clamped can become to dominant. Which can result in
+                     *       weird looking pixels at the side.
+                     *       Another way to handle this is to 'wrap' around but
+                     *       I doubt that it would yield good results.
+                     *
+                     * - We can also do wrap around, which is also weird.
+                     * - We could also fix this by 'expanding' the source image.
+                     */
                     const auto x1 = utility::clamp(x - j, 0, src.width() - 1);
                     const auto y1 = utility::clamp(y - k, 0, src.height() - 1);
                     const auto index = (y1 * src.width()) + x1;
 
-                    sum = sum +
-                          kernel[j + kernel.size() / 2][k + kernel.size() / 2] * static_cast<float>(src.data()[index]);
+                    sum += kernel[j + half_kernel_size][k + half_kernel_size] * (float)src.data()[index];
                 }
             }
             const int index = (y * src.width()) + x;
-            float pixel = (kernel.factor * sum) + kernel.offset;
+            const float pixel = (kernel.factor * sum) + kernel.offset;
 
-            pixel = utility::clamp<pixel_type_t>(pixel, detail::pixel_min_value<pixel_type_t>(),
-                                                 detail::pixel_max_value<pixel_type_t>());
-            dst.data()[index] = static_cast<pixel_type_t>(pixel);
+            // \todo rework this so we don't have todo weird things with clamp_type
+            const auto pixel_temp =
+                utility::clamp<clamp_type<T>>(static_cast<clamp_type<T>>(pixel), pixel_values<T>::min_color(),
+                                             pixel_values<T>::max_color());
+            dst.data()[index] = static_cast<T>(pixel_temp);
         }
     }
 }
