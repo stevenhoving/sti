@@ -1,7 +1,7 @@
 #pragma once
 
+#include <sti/slice.hpp>
 #include <array>
-#include <vector>
 
 namespace sti
 {
@@ -11,7 +11,7 @@ class image final
 {
 public:
     using pixel_type = pixel_type_t;
-    using slice_type = std::vector<pixel_type>;
+    using slice_type = slice<pixel_type>;
 
     image();
     image(const int width, const int height);
@@ -29,12 +29,10 @@ public:
     auto height() const;
     auto stride() const;
     auto slice_count() const;
-    auto data(const int slice);
-    auto data(const int slice) const;
+    auto &get_slice(const int slice);
+    auto &get_slice(const int slice) const;
 
 private:
-    void __resize_slices_to_fit();
-
     int width_;
     int height_;
     int stride_;
@@ -59,9 +57,11 @@ template <typename pixel_type_t, int slice_count_t>
 image<pixel_type_t, slice_count_t>::image(const int width, const int height, const int stride)
     : width_(width)
     , height_(height)
-    , stride_(width)
+    , stride_(stride)
+    , slices_()
 {
-    __resize_slices_to_fit();
+    for (auto i = 0; i < slice_count_t; ++i)
+        slices_[i] = slice<pixel_type_t>(height_, stride_);
 }
 
 template <typename pixel_type_t, int slice_count_t>
@@ -95,26 +95,19 @@ auto image<pixel_type_t, slice_count_t>::stride() const
 template <typename pixel_type_t, int slice_count_t>
 auto image<pixel_type_t, slice_count_t>::slice_count() const
 {
-    return slice_count;
+    return slice_count_t;
 }
 
 template <typename pixel_type_t, int slice_count_t>
-auto image<pixel_type_t, slice_count_t>::data(const int slice)
+auto &image<pixel_type_t, slice_count_t>::get_slice(const int slice)
 {
-    return slices_[slice].data();
+    return slices_[slice];
 }
 
 template <typename pixel_type_t, int slice_count_t>
-auto image<pixel_type_t, slice_count_t>::data(const int slice) const
+auto &image<pixel_type_t, slice_count_t>::get_slice(const int slice) const
 {
-    return slices_[slice].data();
-}
-
-template <typename pixel_type_t, int slice_count_t>
-void image<pixel_type_t, slice_count_t>::__resize_slices_to_fit()
-{
-    for (auto i = 0; i < slice_count_t; ++i)
-        slices_[i].resize(height_ * stride_);
+    return slices_[slice];
 }
 
 } // namespace sti

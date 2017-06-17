@@ -8,4 +8,5 @@ TEST(test_image, default_stride_value)
     EXPECT_EQ(10, image.width());
     EXPECT_EQ(10, image.width());
     EXPECT_EQ(image.width(), image.stride());
+    EXPECT_EQ(3, image.slice_count());
 }
