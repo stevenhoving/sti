@@ -56,6 +56,7 @@ add_library(sti STATIC
     ${STI_CONVERT_SOURCES}
     ${STI_FILTER_SOURCES}
     ${STI_KERNEL_SOURCES}
+    ${STI_MATH_SOURCES}
 )
 
 target_link_libraries(sti
