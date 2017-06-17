@@ -6,17 +6,17 @@
 namespace sti
 {
 
-template <typename pixel_type_t, int slice_count_t>
+template <typename pixel_type, int slice_count_t>
 class image final
 {
 public:
-    using pixel_type = pixel_type_t;
-    using slice_type = slice<pixel_type>;
+    using pixel_type_t = pixel_type;
+    using slice_type_t = slice<pixel_type_t>;
 
     image();
     image(const int width, const int height);
     image(const int width, const int height, const int stride);
-    image(const int width, const int height, const int stride, std::array<slice_type, slice_count_t> &&slices);
+    image(const int width, const int height, const int stride, std::array<slice_type_t, slice_count_t> &&slices);
     ~image() = default;
 
     image(image &&other) = default;
@@ -29,14 +29,14 @@ public:
     auto height() const;
     auto stride() const;
     auto slice_count() const;
-    auto get_slice(const int slice) -> slice_type &;
-    auto get_slice(const int slice) const -> const slice_type &;
+    auto get_slice(const int slice) ->slice_type_t &;
+    auto get_slice(const int slice) const -> const slice_type_t &;
 
 private:
     int width_;
     int height_;
     int stride_;
-    std::array<slice_type, slice_count_t> slices_;
+    std::array<slice_type_t, slice_count_t> slices_;
 };
 
 template <typename pixel_type_t, int slice_count_t>
@@ -66,7 +66,7 @@ image<pixel_type_t, slice_count_t>::image(const int width, const int height, con
 
 template <typename pixel_type_t, int slice_count_t>
 image<pixel_type_t, slice_count_t>::image(const int width, const int height, const int stride,
-                                          std::array<slice_type, slice_count_t> &&slices)
+                                          std::array<slice_type_t, slice_count_t> &&slices)
     : width_(width)
     , height_(height)
     , stride_(width)
@@ -99,13 +99,13 @@ auto image<pixel_type_t, slice_count_t>::slice_count() const
 }
 
 template <typename pixel_type_t, int slice_count_t>
-auto image<pixel_type_t, slice_count_t>::get_slice(const int slice) -> slice_type &
+auto image<pixel_type_t, slice_count_t>::get_slice(const int slice) -> slice_type_t &
 {
     return slices_[slice];
 }
 
 template <typename pixel_type_t, int slice_count_t>
-auto image<pixel_type_t, slice_count_t>::get_slice(const int slice) const -> const slice_type &
+auto image<pixel_type_t, slice_count_t>::get_slice(const int slice) const -> const slice_type_t &
 {
     return slices_[slice];
 }
