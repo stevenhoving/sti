@@ -3,6 +3,7 @@
 #include <sti/image.hpp>
 #include <sti/filter/filter.hpp>
 #include <sti/filter/filter_mean_shift.hpp>
+#include <sti/filter/filter_threshold_adaptive_bradley.hpp>
 #include <sti/color_image.hpp>
 #include <sti/codecs/codec_png.h>
 #include <sti/convert/convert_image.hpp>
@@ -53,6 +54,29 @@ TEST(test_filter, test_apply_mean_shift_filter)
                                                                                  aeon::streams::access_mode::truncate);
     sti::codecs::png::encode(new_color_image, output_stream);
 }
+
+TEST(test_filter, test_apply_threshold_adaptive_bradley)
+{
+    auto stream = aeon::streams::file_stream(STI_TEST_DATA_PATH "/DSC_7000.png");
+    auto image = sti::color_image();
+    ASSERT_NO_THROW(image = sti::codecs::png::decode(stream));
+
+    auto result = sti::convert_image<std::uint8_t, 4>::from_color_image(image);
+    auto filtered_image = sti::image<std::uint8_t, 4>(result.width(), result.height(), result.stride());
+
+    auto kernel = sti::kernel::lowpass::make_kernel<float, 3>();
+    sti::filter::filter_threshold_adaptive_bradley(result.get_slice(0), filtered_image.get_slice(0), 4, 0.1f);
+    sti::filter::filter_threshold_adaptive_bradley(result.get_slice(1), filtered_image.get_slice(1), 4, 0.1f);
+    sti::filter::filter_threshold_adaptive_bradley(result.get_slice(2), filtered_image.get_slice(2), 4, 0.1f);
+    sti::filter::filter_threshold_adaptive_bradley(result.get_slice(3), filtered_image.get_slice(3), 4, 0.1f);
+
+    auto new_color_image = sti::convert_image<std::uint8_t, 4>::to_color_image(filtered_image);
+
+    auto output_stream = aeon::streams::file_stream("DSC_7000_adaptive_bradley_filtered.png", aeon::streams::access_mode::write |
+                                                                                 aeon::streams::access_mode::truncate);
+    sti::codecs::png::encode(new_color_image, output_stream);
+}
+
 
 #if 0
 TEST(test_filter, test_mean_shift_filter)

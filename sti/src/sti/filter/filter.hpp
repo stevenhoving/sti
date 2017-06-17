@@ -62,7 +62,7 @@ static void apply_kernel(const sti::slice<T> &src, sti::slice<T> &dst, const K &
 
             // \todo rework this so we don't have todo weird things with clamp_type
             const auto pixel_temp = utility::clamp<clamp_type<T>>(
-                static_cast<clamp_type<T>>(pixel), pixel_values<T>::min_color(), pixel_values<T>::max_color());
+                static_cast<clamp_type<T>>(pixel), pixel_values<T>::min_value(), pixel_values<T>::max_value());
             dst.data()[index] = static_cast<T>(pixel_temp);
         }
     }
