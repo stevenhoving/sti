@@ -53,3 +53,6 @@ vs_build
 # Clion
 .idea
 cmake-build-*
+
+# Test files
+ignore_*.png
