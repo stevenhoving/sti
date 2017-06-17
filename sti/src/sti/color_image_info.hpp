@@ -17,13 +17,13 @@ struct image_info
 {
     image_info();
     explicit image_info(const color_image_format format);
-    explicit image_info(const int width, const int height, const int bytes_per_pixel, const int stride,
+    explicit image_info(const int width, const int height, const int bits, const int stride,
                         const color_image_format format);
 
     int width;
     int height;
     int stride;
-    int bytes_per_pixel;
+    int bits;
     color_image_format format;
 };
 
@@ -37,12 +37,12 @@ inline image_info::image_info(const color_image_format format)
 {
 }
 
-inline image_info::image_info(const int width, const int height, const int bytes_per_pixel, const int stride,
+inline image_info::image_info(const int width, const int height, const int bits, const int stride,
                               const color_image_format format)
     : width(width)
     , height(height)
     , stride(stride)
-    , bytes_per_pixel(bytes_per_pixel)
+    , bits(bits)
     , format(format)
 {
 }

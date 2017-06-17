@@ -22,8 +22,8 @@ public:
     slice(slice const &) = default;
     auto operator=(slice const &) -> slice & = default;
 
-    auto data();
-    auto data() const;
+    auto data() -> pixel_type_t *;
+    auto data() const -> const pixel_type_t *;
 
     auto begin() const;
     auto end() const;
@@ -35,32 +35,32 @@ private:
     std::vector<pixel_type_t> data_;
 };
 
-template<typename pixel_type_t>
+template <typename pixel_type_t>
 slice<pixel_type_t>::slice()
     : data_()
 {
 }
 
-template<typename pixel_type_t>
+template <typename pixel_type_t>
 slice<pixel_type_t>::slice(const int height, const int stride)
     : data_(height * stride)
 {
 }
 
-template<typename pixel_type_t>
+template <typename pixel_type_t>
 slice<pixel_type_t>::slice(std::vector<pixel_type_t> &&data)
     : data_(std::move(data))
 {
 }
 
 template <typename pixel_type_t>
-auto slice<pixel_type_t>::data()
+auto slice<pixel_type_t>::data() -> pixel_type_t *
 {
     return data_.data();
 }
 
 template <typename pixel_type_t>
-auto slice<pixel_type_t>::data() const
+auto slice<pixel_type_t>::data() const -> const pixel_type_t *
 {
     return data_.data();
 }

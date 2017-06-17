@@ -29,8 +29,8 @@ public:
     auto height() const;
     auto stride() const;
     auto slice_count() const;
-    auto &get_slice(const int slice);
-    auto &get_slice(const int slice) const;
+    auto get_slice(const int slice) -> slice_type &;
+    auto get_slice(const int slice) const -> const slice_type &;
 
 private:
     int width_;
@@ -99,13 +99,13 @@ auto image<pixel_type_t, slice_count_t>::slice_count() const
 }
 
 template <typename pixel_type_t, int slice_count_t>
-auto &image<pixel_type_t, slice_count_t>::get_slice(const int slice)
+auto image<pixel_type_t, slice_count_t>::get_slice(const int slice) -> slice_type &
 {
     return slices_[slice];
 }
 
 template <typename pixel_type_t, int slice_count_t>
-auto &image<pixel_type_t, slice_count_t>::get_slice(const int slice) const
+auto image<pixel_type_t, slice_count_t>::get_slice(const int slice) const -> const slice_type &
 {
     return slices_[slice];
 }

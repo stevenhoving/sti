@@ -7,7 +7,7 @@
 namespace sti
 {
 
-class color_image
+class color_image final
 {
 public:
     color_image();
@@ -42,7 +42,7 @@ inline color_image::color_image()
 
 inline color_image::color_image(const image_info &info)
     : info_(info)
-    , buffer_(info_.stride * info_.height * info_.bytes_per_pixel)
+    , buffer_(info_.stride * info_.height * (info_.bits >> 3))
 {
 }
 

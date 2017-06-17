@@ -19,7 +19,7 @@ set(STI_CODECS_SOURCES
 source_group(codecs FILES ${STI_CODECS_SOURCES})
 
 set(STI_CONVERT_SOURCES
-    src/sti/convert/image.hpp
+    src/sti/convert/convert_image.hpp
 )
 
 source_group(convert FILES ${STI_CONVERT_SOURCES})

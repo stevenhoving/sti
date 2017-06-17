@@ -38,26 +38,27 @@ static auto __get_image_info(const int width, const int height, const int bit_de
 {
     image_info info;
 
+    int bytes_per_pixel = 0;
     switch (color_type)
     {
         case PNG_COLOR_TYPE_RGB:
-            info.bytes_per_pixel = 3;
             info.format = color_image_format::RGB;
+            bytes_per_pixel = 3;
             break;
         case PNG_COLOR_TYPE_RGB_ALPHA:
-            info.bytes_per_pixel = 4;
             info.format = color_image_format::RGBA;
+            bytes_per_pixel = 4;
             break;
         default:
             throw std::runtime_error("Invalid or unknown pixel format.");
     }
 
-    if (bit_depth == 16)
-        info.bytes_per_pixel *= 2;
+    bytes_per_pixel *= (bit_depth >> 3);
 
+    info.bits = bit_depth;
     info.width = width;
     info.height = height;
-    info.stride = width * info.bytes_per_pixel;
+    info.stride = width * bytes_per_pixel;
 
     return info;
 }
@@ -70,28 +71,6 @@ static auto __get_png_pixel_format(const image_info &info)
             return PNG_COLOR_TYPE_RGB;
         case color_image_format::RGBA:
             return PNG_COLOR_TYPE_RGB_ALPHA;
-        case color_image_format::BGR:
-        case color_image_format::YUV420:
-        case color_image_format::invalid:
-        default:
-            throw std::runtime_error("Unsupported image format.");
-    }
-}
-
-static auto __get_bit_depth(const image_info &info)
-{
-    switch (info.format)
-    {
-        case color_image_format::RGB:
-            if (info.bytes_per_pixel == 3)
-                return 8;
-            else
-                return 16;
-        case color_image_format::RGBA:
-            if (info.bytes_per_pixel == 4)
-                return 8;
-            else
-                return 16;
         case color_image_format::BGR:
         case color_image_format::YUV420:
         case color_image_format::invalid:
@@ -182,7 +161,7 @@ void png::encode(const color_image &image, aeon::streams::stream &stream)
     const auto color_type = __get_png_pixel_format(image_info);
     const auto width = static_cast<png_uint_32>(image_info.width);
     const auto height = static_cast<png_uint_32>(image_info.height);
-    const auto bit_depth = __get_bit_depth(image_info);
+    const auto bit_depth = image_info.bits;
 
     png_set_IHDR(png_structs.png_ptr(), png_structs.info_ptr(), width, height, bit_depth, color_type,
                  PNG_INTERLACE_NONE, PNG_COMPRESSION_TYPE_DEFAULT, PNG_FILTER_TYPE_DEFAULT);
