@@ -17,10 +17,19 @@ using bradley_intergral_type = typename std::conditional<std::is_integral<T>::va
 template<typename T>
 using bradley_intergral_vector_type = std::vector<bradley_intergral_type<T>>;
 
-//https://github.com/rmtheis/bradley-adaptive-thresholding/raw/master/gerh-50002.pdf
-// \todo parameterize this function: 'block size' and 'threshold'. But to be sure... read the paper.
+/*!
+* \param[in] src           The image we are applying the bradley adaptive threshold filter on.
+* \param[in] dst           The destination image we are storing the result in.
+* \param[in] block_size_divider The amount of columns/rows the source image is segmented in.
+* \param[in] threshold     The threshold (0.0 - 1.0) value.
+*
+* \see https://github.com/rmtheis/bradley-adaptive-thresholding/raw/master/gerh-50002.pdf
+* \todo Read the paper to make sure we do everything correct, for both integral
+*       and floating point types.
+*/
 template <typename T>
-void filter_threshold_adaptive_bradley(const sti::core::image<T> &src, sti::core::image<T> &dst, int size, float threshold)
+void filter_threshold_adaptive_bradley(const sti::core::image<T> &src, sti::core::image<T> &dst, const int block_size_divider,
+                                       const float threshold)
 {
     /* create integral image (aka summed-area table) */
     auto intergral_img = bradley_intergral_vector_type<T>();
@@ -41,11 +50,7 @@ void filter_threshold_adaptive_bradley(const sti::core::image<T> &src, sti::core
         }
     }
 
-    //int s2 = (src.width() / 8) / 2;
-    //const int s2 = (src.width() / 32) / 2; // 32 -> x is block size
-    const int s2 = (src.width() / size) / 2; // 32 -> x is block size
-                                             //const float T = 0.15f; // threshold
-    const float Tr = threshold;
+    const int s2 = (src.width() / block_size_divider) / 2;
 
     // perform thresholding
     for (int x = 0; x < src.width(); x++)
@@ -76,7 +81,7 @@ void filter_threshold_adaptive_bradley(const sti::core::image<T> &src, sti::core
 
             // \todo this is gonna suck for floats and doubles...
             //if ((long)(src.data()[index] * count) < (long)(sum * (1.0 - Tr)))
-            if ((double)(src.data()[index] * count) < (double)(sum * (1.0 - Tr)))
+            if ((double)(src.data()[index] * count) < (double)(sum * (1.0 - threshold)))
                 dst.data()[index] = detail::image::pixel_min_value<T>();
             else
                 dst.data()[index] = detail::image::pixel_max_value<T>();
