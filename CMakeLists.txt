@@ -14,6 +14,9 @@ set(CMAKE_DEBUG_POSTFIX "_d")
 
 set(CMAKE_CXX_STANDARD 14)
 
+include(CTest)
+enable_testing()
+
 if (MSVC)
     option(STI_ENABLE_MSVC_ITERATOR_DEBUGGING "Enable iterator debugging in Visual Studio" ON)
     if (NOT STI_ENABLE_MSVC_ITERATOR_DEBUGGING)
