@@ -17,9 +17,16 @@ set(STI_CODECS_SOURCES
 
 source_group(codecs FILES ${STI_CODECS_SOURCES})
 
+set(STI_CONVERT_SOURCES
+    src/sti/convert/image.hpp
+)
+
+source_group(convert FILES ${STI_CONVERT_SOURCES})
+
 add_library(sti STATIC
     ${STI_CORE_SOURCES}
     ${STI_CODECS_SOURCES}
+    ${STI_CONVERT_SOURCES}
 )
 
 target_link_libraries(sti
