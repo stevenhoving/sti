@@ -19,3 +19,14 @@ TEST(test_png_codec, decode_image)
     EXPECT_EQ(4, info.bytes_per_pixel);
     EXPECT_EQ(info.width, info.stride);
 }
+
+TEST(test_png_codec, decode_encode_image)
+{
+    auto stream = aeon::streams::file_stream(STI_TEST_DATA_PATH "/DSC_7000.png");
+    auto image = sti::color_image();
+    ASSERT_NO_THROW(image = sti::codecs::png::decode(stream));
+
+    auto output_stream = aeon::streams::file_stream(
+        "DSC_7000_encoded.png", aeon::streams::access_mode::write | aeon::streams::access_mode::truncate);
+    sti::codecs::png::encode(image, output_stream);
+}
