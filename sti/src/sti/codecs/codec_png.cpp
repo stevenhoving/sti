@@ -34,8 +34,7 @@ static void __png_write_callback(png_structp png_ptr, png_bytep data, png_size_t
     stream->write(data, length);
 }
 
-static auto __get_image_info(const int width, const int height, const int stride, const int bit_depth,
-                             const int color_type) -> image_info
+static auto __get_image_info(const int width, const int height, const int bit_depth, const int color_type) -> image_info
 {
     image_info info;
 
@@ -58,7 +57,7 @@ static auto __get_image_info(const int width, const int height, const int stride
 
     info.width = width;
     info.height = height;
-    info.stride = stride;
+    info.stride = width * info.bytes_per_pixel;
 
     return info;
 }
@@ -166,8 +165,7 @@ auto png::decode(aeon::streams::stream &stream) -> color_image
     // Read the png into image_data through row_pointers
     png_read_image(png_structs.png_ptr(), row_pointers);
 
-    return color_image(__get_image_info(temp_width, temp_height, temp_width, bit_depth, color_type),
-                       std::move(bitmap_buffer));
+    return color_image(__get_image_info(temp_width, temp_height, bit_depth, color_type), std::move(bitmap_buffer));
 }
 
 void png::encode(const color_image &image, aeon::streams::stream &stream)
@@ -184,7 +182,6 @@ void png::encode(const color_image &image, aeon::streams::stream &stream)
     const auto color_type = __get_png_pixel_format(image_info);
     const auto width = static_cast<png_uint_32>(image_info.width);
     const auto height = static_cast<png_uint_32>(image_info.height);
-    const auto bytes_per_pixel = image_info.bytes_per_pixel;
     const auto bit_depth = __get_bit_depth(image_info);
 
     png_set_IHDR(png_structs.png_ptr(), png_structs.info_ptr(), width, height, bit_depth, color_type,
@@ -195,7 +192,7 @@ void png::encode(const color_image &image, aeon::streams::stream &stream)
     auto pixel_data_ptr = image.data();
 
     for (auto y = 0u; y < height; ++y)
-        rowpointer_buffer_ptr[y] = pixel_data_ptr + y * width * bytes_per_pixel;
+        rowpointer_buffer_ptr[y] = pixel_data_ptr + y * image_info.stride;
 
     png_set_rows(png_structs.png_ptr(), png_structs.info_ptr(), const_cast<png_bytepp>(rowpointer_buffer_ptr));
     png_set_write_fn(png_structs.png_ptr(), &stream, __png_write_callback, nullptr);

@@ -17,7 +17,7 @@ TEST(test_png_codec, decode_image)
     EXPECT_EQ(171, info.height);
     EXPECT_EQ(sti::color_image_format::RGBA, info.format);
     EXPECT_EQ(4, info.bytes_per_pixel);
-    EXPECT_EQ(info.width, info.stride);
+    EXPECT_EQ(info.width * info.bytes_per_pixel, info.stride);
 }
 
 TEST(test_png_codec, decode_encode_image)
