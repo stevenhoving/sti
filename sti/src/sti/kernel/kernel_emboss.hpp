@@ -2,13 +2,16 @@
 
 namespace sti
 {
+namespace kernel
+{
 namespace emboss
 {
-/*
+/* Example of a 3x3 emboss kernel
  -1 -1  0
  -1  0  1
   0  1  1
 
+  Example of a 5x5 emboss kernel
  -1 -1 -1 -1  0
  -1 -1 -1  0  1
  -1 -1  0  1  1
@@ -41,4 +44,5 @@ kernel<T, Size> make_kernel()
 }
 
 } // namespace emboss
+} // namespace kernel
 } // namespace sti

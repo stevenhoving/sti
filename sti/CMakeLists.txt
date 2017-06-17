@@ -40,6 +40,9 @@ set(STI_KERNEL_SOURCES
     src/sti/kernel/kernel.hpp
     src/sti/kernel/kernel_lowpass.hpp
     src/sti/kernel/kernel_gaussian.hpp
+    src/sti/kernel/kernel_edge.hpp
+    src/sti/kernel/kernel_emboss.hpp
+    src/sti/kernel/kernel_sharpen.hpp
 )
 
 source_group(kernel FILES ${STI_KERNEL_SOURCES})

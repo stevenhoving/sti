@@ -7,6 +7,9 @@ namespace sti
 namespace kernel
 {
 
+/*!
+ * convolution story.
+ */
 template <typename T, int Size>
 class kernel
 {
@@ -15,16 +18,6 @@ class kernel
     using const_iterator = typename value_type::const_iterator;
 
 public:
-    // kernel() = default;
-
-    // how about the power to move you
-    // kernel(kernel&& other) = default;
-    // kernel & operator=(kernel &&other) = default;
-
-    // we don't want to copy our image, we only want to move it or explicitly clone it
-    // kernel(const kernel &) = delete;
-    // kernel& operator=(const kernel &) = delete;
-
     inline const int size() const
     {
         return Size;
@@ -34,21 +27,26 @@ public:
     {
         return data_.begin();
     }
+
     inline iterator end()
     {
         return data_.end();
     }
+
     inline const_iterator begin() const
     {
         return data_.begin();
     }
+
     inline const_iterator end() const
     {
         return data_.end();
     }
 
-    // \note this is kinda fucked up....., we should return a memory_view here
-    //       :P but only string_view exists atm.. !!!!!
+    /*!
+     * \todo improve safety by solving the initial problem of accessing the
+     * kernel differently.
+     */
     inline const T *operator[](const int y) const
     {
         return &data_[y * Size];

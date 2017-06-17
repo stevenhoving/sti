@@ -9,6 +9,9 @@
 #include <sti/convert/convert_image.hpp>
 #include <sti/kernel/kernel_lowpass.hpp>
 #include <sti/kernel/kernel_gaussian.hpp>
+#include <sti/kernel/kernel_edge.hpp>
+#include <sti/kernel/kernel_emboss.hpp>
+#include <sti/kernel/kernel_sharpen.hpp>
 #include <aeon/streams/file_stream.h>
 #include <build_config.h>
 
@@ -52,6 +55,72 @@ TEST(test_filter, test_apply_gaussian_filter)
     auto new_color_image = sti::convert_image<std::uint8_t, 4>::to_color_image(filtered_image);
 
     auto output_stream = aeon::streams::file_stream("DSC_7000_gaussian_filtered.png", aeon::streams::access_mode::write |
+        aeon::streams::access_mode::truncate);
+    sti::codecs::png::encode(new_color_image, output_stream);
+}
+
+TEST(test_filter, test_apply_edge_filter)
+{
+    auto stream = aeon::streams::file_stream(STI_TEST_DATA_PATH "/DSC_7000.png");
+    auto image = sti::color_image();
+    ASSERT_NO_THROW(image = sti::codecs::png::decode(stream));
+
+    auto result = sti::convert_image<std::uint8_t, 4>::from_color_image(image);
+    auto filtered_image = sti::image<std::uint8_t, 4>(result.width(), result.height(), result.stride());
+
+    auto kernel = sti::kernel::edge::make_kernel<float, 3>();
+    sti::filter::apply_kernel(result.get_slice(0), filtered_image.get_slice(0), kernel);
+    sti::filter::apply_kernel(result.get_slice(1), filtered_image.get_slice(1), kernel);
+    sti::filter::apply_kernel(result.get_slice(2), filtered_image.get_slice(2), kernel);
+    sti::filter::apply_kernel(result.get_slice(3), filtered_image.get_slice(3), kernel);
+
+    auto new_color_image = sti::convert_image<std::uint8_t, 4>::to_color_image(filtered_image);
+
+    auto output_stream = aeon::streams::file_stream("DSC_7000_edge_filtered.png", aeon::streams::access_mode::write |
+        aeon::streams::access_mode::truncate);
+    sti::codecs::png::encode(new_color_image, output_stream);
+}
+
+TEST(test_filter, test_apply_emboss_filter)
+{
+    auto stream = aeon::streams::file_stream(STI_TEST_DATA_PATH "/DSC_7000.png");
+    auto image = sti::color_image();
+    ASSERT_NO_THROW(image = sti::codecs::png::decode(stream));
+
+    auto result = sti::convert_image<std::uint8_t, 4>::from_color_image(image);
+    auto filtered_image = sti::image<std::uint8_t, 4>(result.width(), result.height(), result.stride());
+
+    auto kernel = sti::kernel::emboss::make_kernel<float, 3>();
+    sti::filter::apply_kernel(result.get_slice(0), filtered_image.get_slice(0), kernel);
+    sti::filter::apply_kernel(result.get_slice(1), filtered_image.get_slice(1), kernel);
+    sti::filter::apply_kernel(result.get_slice(2), filtered_image.get_slice(2), kernel);
+    sti::filter::apply_kernel(result.get_slice(3), filtered_image.get_slice(3), kernel);
+
+    auto new_color_image = sti::convert_image<std::uint8_t, 4>::to_color_image(filtered_image);
+
+    auto output_stream = aeon::streams::file_stream("DSC_7000_emboss_filtered.png", aeon::streams::access_mode::write |
+        aeon::streams::access_mode::truncate);
+    sti::codecs::png::encode(new_color_image, output_stream);
+}
+
+TEST(test_filter, test_apply_sharpen_filter)
+{
+    auto stream = aeon::streams::file_stream(STI_TEST_DATA_PATH "/DSC_7000.png");
+    auto image = sti::color_image();
+    ASSERT_NO_THROW(image = sti::codecs::png::decode(stream));
+
+    auto result = sti::convert_image<std::uint8_t, 4>::from_color_image(image);
+    auto filtered_image = sti::image<std::uint8_t, 4>(result.width(), result.height(), result.stride());
+
+    auto kernel = sti::kernel::sharpen::make_kernel<float, 3>();
+    sti::filter::apply_kernel(result.get_slice(0), filtered_image.get_slice(0), kernel);
+    sti::filter::apply_kernel(result.get_slice(1), filtered_image.get_slice(1), kernel);
+    sti::filter::apply_kernel(result.get_slice(2), filtered_image.get_slice(2), kernel);
+    sti::filter::apply_kernel(result.get_slice(3), filtered_image.get_slice(3), kernel);
+
+    auto new_color_image = sti::convert_image<std::uint8_t, 4>::to_color_image(filtered_image);
+
+    auto output_stream = aeon::streams::file_stream("DSC_7000_sharpen_filtered.png", aeon::streams::access_mode::write |
         aeon::streams::access_mode::truncate);
     sti::codecs::png::encode(new_color_image, output_stream);
 }
