@@ -2,6 +2,7 @@
 
 #include <sti/kernel/kernel.hpp>
 #include <sti/math/math_constants.hpp>
+#include <cmath>
 
 namespace sti
 {
