@@ -5,7 +5,7 @@ namespace sti
 namespace high_pass
 {
 
-template<typename T, int Size>
+template <typename T, int Size>
 kernel<T, Size> make_kernel()
 {
     kernel<T, Size> kern;

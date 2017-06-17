@@ -1,23 +1,25 @@
 #pragma once
 
-namespace sti {
-namespace core {
+namespace sti
+{
+namespace core
+{
 
 // maybe make these parameters
 #define MEAN_SHIFT_PIXEL_DISTANCE 3
 #define MEAN_SHIFT_MAX_ITERATIONS 10
 
-template<typename T>
-void filter_mean_shift(const sti::core::image<T> &src, sti::core::image<T> &dst,
-                       const int spatial_radius, const float color_distance)
+template <typename T>
+void filter_mean_shift(const sti::core::image<T> &src, sti::core::image<T> &dst, const int spatial_radius,
+                       const float color_distance)
 {
     int rad, rad2;
     float rad_col, rad_col2;
 
     rad = spatial_radius;
-    rad2 = rad*rad;
+    rad2 = rad * rad;
     rad_col = color_distance;
-    rad_col2 = rad_col*rad_col;
+    rad_col2 = rad_col * rad_col;
 
     const int width = src.width();
     const int height = src.height();
@@ -39,8 +41,8 @@ void filter_mean_shift(const sti::core::image<T> &src, sti::core::image<T> &dst,
 
             int xc = x;
             int yc = y;
-            
-            const int pos = y*width + x;
+
+            const int pos = y * width + x;
             float Yc = src_pixels[pos];
 
             iters = 0;
@@ -65,12 +67,13 @@ void filter_mean_shift(const sti::core::image<T> &src, sti::core::image<T> &dst,
                             const int x2 = xc + rx;
                             if (x2 >= 0 && x2 < width)
                             {
-                                if (ry*ry + rx*rx <= rad2)
+                                if (ry * ry + rx * rx <= rad2)
                                 {
-                                    float Y2 = src_pixels[y2*width + x2];
+                                    float Y2 = src_pixels[y2 * width + x2];
                                     float dY = Yc - Y2;
 
-                                    if (dY*dY <= rad_col2) {
+                                    if (dY * dY <= rad_col2)
+                                    {
                                         mx += x2;
                                         my += y2;
                                         mY += Y2;
@@ -82,14 +85,14 @@ void filter_mean_shift(const sti::core::image<T> &src, sti::core::image<T> &dst,
                     }
                 }
                 num_ = 1.f / num;
-                Yc = mY*num_;
+                Yc = mY * num_;
                 xc = (int)(mx * num_ + 0.5f);
                 yc = (int)(my * num_ + 0.5f);
                 const int dx = xc - xc_old;
                 const int dy = yc - yc_old;
                 const float dY = Yc - Yc_old;
 
-                shift = dx*dx + dy*dy + dY*dY;
+                shift = dx * dx + dy * dy + dY * dY;
                 // when the shift (the distance in pixel color is less or
                 // equal to 3 we assume they are equal.
             } while (shift > MEAN_SHIFT_PIXEL_DISTANCE && ++iters < 10);
@@ -100,9 +103,8 @@ void filter_mean_shift(const sti::core::image<T> &src, sti::core::image<T> &dst,
     }
 }
 
-template<typename T>
-sti::core::image<T> filter_mean_shift_copy(const sti::core::image<T> &src,
-                                           const int spatial_radius,
+template <typename T>
+sti::core::image<T> filter_mean_shift_copy(const sti::core::image<T> &src, const int spatial_radius,
                                            const float color_distance)
 {
     auto dst = sti::core::image<T>(src.width(), src.height());

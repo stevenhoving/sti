@@ -310,7 +310,7 @@ void test_adaptive_threshold_shanbhag(sti::image<T> &src)
 {
     auto img = sti::image(src.width(), src.height());
     sti::image_filter::adaptive_threshold_shanbhag(src, img);
-    
+
     sti::image_codec::bmp::save(img, "adaptive_threshold_shanbhag.bmp");
 }
 
@@ -333,12 +333,12 @@ void test_adaptive_threshold_yen(sti::image<T> &src)
 void test_histogram()
 {
     auto img_src = sti::image_codec::jpeg::load<float>("data/DSC_7000.jpg");
-    //test_adaptive_threshold_mean(img_src);
-    //test_adaptive_threshold_bradley(img_src);
+    // test_adaptive_threshold_mean(img_src);
+    // test_adaptive_threshold_bradley(img_src);
     test_adaptive_threshold_otsu_segmented(img_src);
-    //test_adaptive_threshold_shanbhag(img_src);
-    //test_adaptive_threshold_triangle(img_src);
-    //test_adaptive_threshold_yen(img_src);
+    // test_adaptive_threshold_shanbhag(img_src);
+    // test_adaptive_threshold_triangle(img_src);
+    // test_adaptive_threshold_yen(img_src);
 }
 
 void test_edge_detection()
@@ -349,11 +349,11 @@ void test_edge_detection()
     auto src = sti::image_codec::jpeg::load<uint8_t>("data/DSC_7000.jpg");
     auto blur = sti::image<uint8_t>(src.width(), src.height());
 
-    //sti::image_filter::apply_kernel(src, blur, sti::gaussian::make_kernel<double, 5>(0.5));
+    // sti::image_filter::apply_kernel(src, blur, sti::gaussian::make_kernel<double, 5>(0.5));
     sti::image_filter::apply_kernel(src, blur, sti::gaussian::make_kernel<double, 5>(2.0));
 
     auto img = sti::image<uint8_t>(src.width(), src.height());
-    //sti::image_filter::adaptive_threshold_mean(blur, img, 32, 2);
+    // sti::image_filter::adaptive_threshold_mean(blur, img, 32, 2);
     sti::image_filter::adaptive_threshold_mean(blur, img, 16, -4);
 
     auto dst = sti::image<uint8_t>(src.width(), src.height());
@@ -370,7 +370,7 @@ void test_edge_detection()
 void test_gaussian()
 {
     auto kern5x5 = sti::gaussian::make_kernel<float, 5>(5.0);
-    //auto src = sti::generator::create_checker_board(512, 512, 8, 8);
+    // auto src = sti::generator::create_checker_board(512, 512, 8, 8);
     auto src = sti::image_codec::jpeg::load<uint8_t>("data/DSC_7000.jpg");
 
     auto dst = sti::image<uint8_t>(src.width(), src.height());
@@ -399,9 +399,9 @@ void test_low_pass()
 void test_emboss()
 {
     auto kern5x5 = sti::emboss::make_kernel<float, 5>();
-    //auto kern5x5 = sti::emboss::make_kernel<double, 3>();
+    // auto kern5x5 = sti::emboss::make_kernel<double, 3>();
     auto src = sti::image_codec::jpeg::load<uint8_t>("data/DSC_7000.jpg");
-    
+
     auto dst = sti::image<uint8_t>(src.width(), src.height());
     sti::image_filter::apply_kernel(src, dst, kern5x5);
     sti::image_codec::bmp::save(dst, "emboss.bmp");
@@ -427,10 +427,10 @@ void test_sobel()
 
 void test_canny()
 {
-    //auto src = sti::image_codec::jpeg::load<uint8_t>("data/DSC_7000.jpg");
-    //auto dst = sti::image<uint8_t>(src.width(), src.height());
-    //sti::canny::canny_edge_detection(src, dst, 100, 30, 1.0);
-    //sti::image_codec::bmp::save(dst, "canny.bmp");
+    // auto src = sti::image_codec::jpeg::load<uint8_t>("data/DSC_7000.jpg");
+    // auto dst = sti::image<uint8_t>(src.width(), src.height());
+    // sti::canny::canny_edge_detection(src, dst, 100, 30, 1.0);
+    // sti::image_codec::bmp::save(dst, "canny.bmp");
 }
 
 #if 0
@@ -463,23 +463,23 @@ void test_vague_denoiser()
 
 #endif
 
-int main( int argc, char* argv[] )
+int main(int argc, char *argv[])
 {
-    //test_brightness();
-    //test_range();
-    //test_blur();
-    //test_contrast();
-    //test_sharping();
+    // test_brightness();
+    // test_range();
+    // test_blur();
+    // test_contrast();
+    // test_sharping();
     test_histogram();
-    //test_edge_detection();
-    //test_gaussian();
-    //test_sharpen();
-    //test_low_pass();
-    //test_emboss();
-    //test_selective_gaussian_blur();
-    //test_sobel();
-    //test_canny();
-    //test_vague_denoiser();
+    // test_edge_detection();
+    // test_gaussian();
+    // test_sharpen();
+    // test_low_pass();
+    // test_emboss();
+    // test_selective_gaussian_blur();
+    // test_sobel();
+    // test_canny();
+    // test_vague_denoiser();
 
     system("pause");
     return 0;

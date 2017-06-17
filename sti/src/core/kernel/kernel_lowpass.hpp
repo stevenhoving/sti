@@ -30,7 +30,7 @@ namespace lowpass
  * This lowpass filter is nothing more than just a averaging filter.
  * \note these are actually 'kernel generators' or something like that...
  */
-template<typename T, int Size>
+template <typename T, int Size>
 static kernel<T, Size> make_kernel()
 {
     auto kern = core::kernel::kernel<T, Size>();

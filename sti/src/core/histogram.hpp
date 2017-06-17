@@ -10,7 +10,7 @@ namespace sti
 {
 namespace core
 {
-template<typename T, int Size = 0x100>
+template <typename T, int Size = 0x100>
 class histogram
 {
 public:
@@ -40,7 +40,8 @@ public:
 
     inline iterator_type end()
     {
-        return data.end():
+        return data.end()
+            :
     }
 
     inline const_iterator_type begin() const
@@ -52,6 +53,7 @@ public:
     {
         return data.end();
     }
+
 private:
     value_type data = {};
 };
@@ -59,7 +61,7 @@ private:
 
 using histogram = sti::core::histogram<uint32_t>;
 
-template<typename T>
+template <typename T>
 static histogram to_histogram(const core::image<T> &src)
 {
     histogram result;
@@ -74,7 +76,7 @@ static histogram to_histogram(const core::image<T> &src)
     return result;
 }
 
-template<>
+template <>
 static histogram to_histogram<uint8_t>(const core::image<uint8_t> &src)
 {
     histogram result;
@@ -85,7 +87,7 @@ static histogram to_histogram<uint8_t>(const core::image<uint8_t> &src)
     return result;
 }
 
-template<typename T>
+template <typename T>
 static sti::image to_image(const sti::core::histogram<T> &src)
 {
     const auto highest = static_cast<float>(*std::max_element(std::begin(src), std::end(src)));
@@ -95,7 +97,7 @@ static sti::image to_image(const sti::core::histogram<T> &src)
     auto dst = result.data();
 
     // we start at the top
-    const auto y_start = int(highest * div_me)-1;
+    const auto y_start = int(highest * div_me) - 1;
     for (auto y = y_start; y >= 0; --y)
     {
         for (int x = 0; x < src.size(); ++x)

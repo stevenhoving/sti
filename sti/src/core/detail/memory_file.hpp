@@ -5,8 +5,10 @@
 #include <vector>
 #include <string>
 
-namespace sti {
-namespace detail {
+namespace sti
+{
+namespace detail
+{
 
 class memory_file
 {
@@ -48,8 +50,15 @@ public:
         fclose(fp);
     }
 
-    inline uint8_t *data() {return const_cast<uint8_t*>(buffer_.data());}
-    inline size_t size() {return buffer_.size();}
+    inline uint8_t *data()
+    {
+        return const_cast<uint8_t *>(buffer_.data());
+    }
+    inline size_t size()
+    {
+        return buffer_.size();
+    }
+
 private:
     std::vector<uint8_t> buffer_;
     std::string filename_;

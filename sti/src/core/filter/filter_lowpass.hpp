@@ -3,10 +3,12 @@
 #include "core/filter/filter.hpp"
 #include "core/kernel/kernel_lowpass.hpp"
 
-namespace sti {
-namespace core {
+namespace sti
+{
+namespace core
+{
 
-template<typename T>
+template <typename T>
 void filter_lowpass(const sti::core::image<T> &src, sti::core::image<T> &dst)
 {
     // default to float kernels for now
@@ -14,7 +16,7 @@ void filter_lowpass(const sti::core::image<T> &src, sti::core::image<T> &dst)
     sti::core::filter::apply_kernel(src, dst, kernel);
 }
 
-template<typename T>
+template <typename T>
 sti::core::image<T> filter_lowpass_copy(const sti::core::image<T> &src)
 {
     auto dst = sti::core::image<T>(src.width(), src.height());

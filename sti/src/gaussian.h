@@ -11,7 +11,7 @@ namespace gaussian
 {
 
 // https://www.wolframalpha.com/input/?i=gaussian
-template<typename T, int Size>
+template <typename T, int Size>
 kernel<T, Size> make_kernel(T Sigma = static_cast<T>(1.0))
 {
     T sigma = Sigma;
@@ -23,13 +23,13 @@ kernel<T, Size> make_kernel(T Sigma = static_cast<T>(1.0))
     kernel<T, Size> kern;
     for (int i = 0; i < Size * Size; ++i)
     {
-        int x = (i % Size) - (Size/2);
-        int y = (i / Size) - (Size/2);
+        int x = (i % Size) - (Size / 2);
+        int y = (i / Size) - (Size / 2);
 
-        //r = static_cast<T>(std::sqrt(x*x + y*y)); // distance from center
-        //T value = static_cast<T>((std::exp(-(r*r) / s)) / (M_PI * s));
+        // r = static_cast<T>(std::sqrt(x*x + y*y)); // distance from center
+        // T value = static_cast<T>((std::exp(-(r*r) / s)) / (M_PI * s));
 
-        r = static_cast<T>(x*x + y*y);
+        r = static_cast<T>(x * x + y * y);
         T value = static_cast<T>((std::exp(-r / s)) / (M_PI * s));
 
         kern.data[i] = value;

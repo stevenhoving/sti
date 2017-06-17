@@ -4,7 +4,6 @@
 #include <core/histogram.hpp>
 #include <string>
 
-
 using namespace std::string_literals;
 
 TEST(test_histogram, test_write_histogram_image)

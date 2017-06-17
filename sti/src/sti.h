@@ -8,9 +8,7 @@
 
 #include <stdio.h>
 
-
-
-#include <windows.h >// for bmp shizzle
+#include <windows.h > // for bmp shizzle
 
 #include <xmmintrin.h>
 #include <emmintrin.h>
@@ -327,13 +325,12 @@ static int ContrastI420LOOKUP(uint8_t* src_argb, int width, int height, int cont
 		uint32_t *pixel7 = (uint32_t*)(src + 24);
 		uint32_t *pixel8 = (uint32_t*)(src + 28);
 
-#define CONTRAST_LOOKUP(x) do {\
-		*(x)=\
-			lookup[*(x) >>  0 & 0xFF] <<  0|\
-			lookup[*(x) >>  8 & 0xFF] <<  8|\
-			lookup[*(x) >> 16 & 0xFF] << 16|\
-			lookup[*(x) >> 24 & 0xFF] << 24;\
-		} while(0)
+#define CONTRAST_LOOKUP(x)                                                                                             \
+    do                                                                                                                 \
+    {                                                                                                                  \
+        *(x) = lookup[*(x) >> 0 & 0xFF] << 0 | lookup[*(x) >> 8 & 0xFF] << 8 | lookup[*(x) >> 16 & 0xFF] << 16 |       \
+               lookup[*(x) >> 24 & 0xFF] << 24;                                                                        \
+    } while (0)
 
 		CONTRAST_LOOKUP(pixel1);
 		CONTRAST_LOOKUP(pixel2);
@@ -396,13 +393,12 @@ static int ContrastI420LOOKUP(uint8_t* src, uint8_t* dst, int width, int height,
 		uint32_t *dpixel7 = (uint32_t*)(dst + 24);
 		uint32_t *dpixel8 = (uint32_t*)(dst + 28);
 
-#define CONTRAST_LOOKUP(a, x) do {\
-		*(a)=\
-			lookup[*(x) >>  0 & 0xFF] <<  0|\
-			lookup[*(x) >>  8 & 0xFF] <<  8|\
-			lookup[*(x) >> 16 & 0xFF] << 16|\
-			lookup[*(x) >> 24 & 0xFF] << 24;\
-				} while(0)
+#define CONTRAST_LOOKUP(a, x)                                                                                          \
+    do                                                                                                                 \
+    {                                                                                                                  \
+        *(a) = lookup[*(x) >> 0 & 0xFF] << 0 | lookup[*(x) >> 8 & 0xFF] << 8 | lookup[*(x) >> 16 & 0xFF] << 16 |       \
+               lookup[*(x) >> 24 & 0xFF] << 24;                                                                        \
+    } while (0)
 
 		CONTRAST_LOOKUP(dpixel1, pixel1);
 		CONTRAST_LOOKUP(dpixel2, pixel2);
@@ -806,8 +802,7 @@ static float kernel_highpass[5 * 5] = {
 	-1.f, -1.f, -1.f, -1.f, -1.f,
 	-1.f, -1.f, -1.f, -1.f, -1.f };
 
-
-#define gaus_mul(x) ((x) * 571.f)
+#define gaus_mul(x) ((x)*571.f)
 
 //http://dev.theomader.com/gaussian-kernel-calculator/
 //Gaussian Filter (used to remove noise) (possible sigma=0.85)
@@ -1125,7 +1120,7 @@ static int ApplyKernel7x7I420(uint8_t* src_argb, int width, int height, const fl
 }
 
 #if 0
-#define gaus_mul2(x) ((x) * 573.0)
+#define gaus_mul2(x) ((x)*573.0)
 static const float kernel_gaussian_7x7_080_div = gaus_mul2(1.f);
 static const float kernel_gaussian_7x7_080[7 * 7] = {
 	gaus_mul2(7.796e-7),	gaus_mul2(0.0000260542), gaus_mul2(0.0002080194), gaus_mul2(0.0004132579), gaus_mul2(0.0002080194), gaus_mul2(0.0000260542), gaus_mul2(7.796e-7),

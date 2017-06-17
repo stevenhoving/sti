@@ -1,5 +1,7 @@
 #include <gtest/gtest.h>
 
+#if 0
+
 #include <core/image.hpp>
 #include <core/histogram.hpp>
 #include <core/filter.hpp>
@@ -16,14 +18,14 @@ TEST(test_filter, test_apply_filter)
     auto path = "D:/dev/sti/data/DSC_7000.jpg"s;
     auto image = sti::read_image(path);
 
-    //auto kernel = sti::filter::kernel::lowpass::make_kernel();
-    //auto kernel = sti::make_filter<sti::filter::kernel::lowpass<3, float>>();
+    // auto kernel = sti::filter::kernel::lowpass::make_kernel();
+    // auto kernel = sti::make_filter<sti::filter::kernel::lowpass<3, float>>();
 
-    //auto result = sti::apply_filter(image, kernel);
-    //auto filter = sti::make_filter(sti::make_kernel());
+    // auto result = sti::apply_filter(image, kernel);
+    // auto filter = sti::make_filter(sti::make_kernel());
 
-    //auto result = sti::apply_filter(image, sti::make_kernel());
-    //sti::write_image(image, "D:/dev/sti/data/DSC_7000_gray.bmp");
+    // auto result = sti::apply_filter(image, sti::make_kernel());
+    // sti::write_image(image, "D:/dev/sti/data/DSC_7000_gray.bmp");
 }
 
 TEST(test_filter, test_mean_shift_filter)
@@ -50,3 +52,5 @@ TEST(test_filter, test_threshold_adaptive_bradley)
     image = sti::core::filter_threshold_adaptive_bradley_copy(image, 25, 0.15f);
     sti::write_image(image, "D:/dev/sti/data/threshold-adaptive-bradley.bmp");
 }
+
+#endif

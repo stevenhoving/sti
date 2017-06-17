@@ -4,13 +4,19 @@
 
 namespace sti
 {
-template<typename T, int Size>
+template <typename T, int Size>
 class kernel
 {
 public:
-    const int size() const {return Size;}
+    const int size() const
+    {
+        return Size;
+    }
     // fucked up.....!!!!!
-    T* operator[](int y) {return &data[y * Size];}
+    T *operator[](int y)
+    {
+        return &data[y * Size];
+    }
     std::array<T, Size * Size> data;
     T factor = static_cast<T>(1.0);
     T offset = static_cast<T>(0.0);

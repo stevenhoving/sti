@@ -7,7 +7,6 @@
 #include <vector>
 #include <string>
 
-
 namespace sti
 {
 class memory_file
@@ -36,12 +35,20 @@ public:
 
     void save()
     {
-
     }
 
-    uint8_t *data() {return buffer_.data();}
-    size_t size() {return buffer_.size();}
-    sti::memory_view view() {return sti::memory_view(buffer_.data(), buffer_.size());}
+    uint8_t *data()
+    {
+        return buffer_.data();
+    }
+    size_t size()
+    {
+        return buffer_.size();
+    }
+    sti::memory_view view()
+    {
+        return sti::memory_view(buffer_.data(), buffer_.size());
+    }
 
 private:
     std::vector<uint8_t> buffer_;

@@ -38,7 +38,7 @@ public:
         }
 
         image_info(image_format _format)
-            : image_info(0, 0, 0, 0, _format)  // C++11 delegating constructors :D
+            : image_info(0, 0, 0, 0, _format) // C++11 delegating constructors :D
         {
         }
 
@@ -72,35 +72,56 @@ public:
     {
     }
 
-    image_info & info() { return info_; }
+    image_info &info()
+    {
+        return info_;
+    }
 
     void resize(int size)
     {
         buffer_.resize(size);
     }
 
-    size_t size(){return buffer_.size();}
-    uint8_t *data() {return buffer_.data();}
+    size_t size()
+    {
+        return buffer_.size();
+    }
+    uint8_t *data()
+    {
+        return buffer_.data();
+    }
 
     /* how about the power to move you*/
-    image_color(image_color&& other)
+    image_color(image_color &&other)
         : info_(std::move(other.info_))
         , buffer_(std::move(other.buffer_))
     {
     }
 
-    image_color &operator = (image_color &&other)
+    image_color &operator=(image_color &&other)
     {
         info_ = std::move(other.info_);
         buffer_ = std::move(other.buffer_);
         return *this;
     }
 
-    const uint8_t *y() const {return buffer_.data();}
-    long y_size() const { return info_.stride * info_.height; }
+    const uint8_t *y() const
+    {
+        return buffer_.data();
+    }
+    long y_size() const
+    {
+        return info_.stride * info_.height;
+    }
 
-    int width() const {return info_.width;}
-    int height() const {return info_.height;}
+    int width() const
+    {
+        return info_.width;
+    }
+    int height() const
+    {
+        return info_.height;
+    }
 
     template <typename T>
     sti::image<T> to_image()
@@ -122,7 +143,7 @@ public:
 
                 auto src_line = &data()[src_index];
                 auto dst_line = &img.data()[dst_index];
-                
+
                 memcpy(dst_line, src_line, width());
             }
             return img;
@@ -130,8 +151,8 @@ public:
     }
 
     /* we need no copy stuff */
-    image_color(image_color const&) = delete;
-    image_color& operator=(image_color const&) = delete;
+    image_color(image_color const &) = delete;
+    image_color &operator=(image_color const &) = delete;
 
 private:
     image_info info_;

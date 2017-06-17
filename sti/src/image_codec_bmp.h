@@ -5,13 +5,12 @@
 
 #include <cstdint>
 
-
 namespace
 {
 
-
 #pragma pack(push, 2)
-struct _BITMAPFILEHEADER {
+struct _BITMAPFILEHEADER
+{
     uint16_t bfType;
     uint32_t bfSize;
     uint16_t bfReserved1;
@@ -21,26 +20,29 @@ struct _BITMAPFILEHEADER {
 #pragma pack(pop)
 
 #pragma pack(push, 2)
-struct _BITMAPINFOHEADER {
+struct _BITMAPINFOHEADER
+{
     uint32_t biSize;
-    int32_t  biWidth;
-    int32_t  biHeight;
+    int32_t biWidth;
+    int32_t biHeight;
     uint16_t biPlanes;
     uint16_t biBitCount;
     uint32_t biCompression;
     uint32_t biSizeImage;
-    int32_t  biXPelsPerMeter;
-    int32_t  biYPelsPerMeter;
+    int32_t biXPelsPerMeter;
+    int32_t biYPelsPerMeter;
     uint32_t biClrUsed;
     uint32_t biClrImportant;
 };
 #pragma pack(pop)
-
 }
 
 namespace
 {
-static const int align_up(int size, int align) {return ((size + (align - 1)) & ~(align - 1));}
+static const int align_up(int size, int align)
+{
+    return ((size + (align - 1)) & ~(align - 1));
+}
 }
 
 namespace sti
@@ -59,7 +61,7 @@ sti::image load(const char *filename)
 
 void save_internal(uint8_t *src, int width, int height, const char *filename);
 
-template<typename T>
+template <typename T>
 void save(sti::image<T> &src, const char *filename)
 {
     auto image = std::vector<uint8_t>(src.width() * src.height());
@@ -70,7 +72,7 @@ void save(sti::image<T> &src, const char *filename)
     save_internal(image.data(), src.width(), src.height(), filename);
 }
 
-template<>
+template <>
 void save(sti::image<uint8_t> &src, const char *filename)
 {
     save_internal(src.data(), src.width(), src.height(), filename);
@@ -78,7 +80,7 @@ void save(sti::image<uint8_t> &src, const char *filename)
 
 void save_internal(uint8_t *src, int width, int height, const char *filename)
 {
-    int width_padd = align_up(width, 4);//(width + (width % 4 ? (4 - width % 4) : 0));
+    int width_padd = align_up(width, 4); //(width + (width % 4 ? (4 - width % 4) : 0));
 
     _BITMAPFILEHEADER hdr;
     memset(&hdr, 0xff, sizeof(_BITMAPFILEHEADER));
@@ -127,8 +129,8 @@ void save_internal(uint8_t *src, int width, int height, const char *filename)
             {
                 pixel = 0;
                 fwrite(&pixel, 1, 1, filePtr);
-                //uint8_t pixel4[4] = {0};
-                //fwrite(&pixel4, 2, 1, filePtr);
+                // uint8_t pixel4[4] = {0};
+                // fwrite(&pixel4, 2, 1, filePtr);
             }
             else
             {
@@ -149,9 +151,9 @@ void save(sti::histogram &src, const char *filename)
     auto highest = std::max_element(std::begin(src), std::end(src));
 
     const float div_me = float(*highest) / 255.f;
-    //const float div_me = float(*highest) / 254.f;
+    // const float div_me = float(*highest) / 254.f;
 
-    uint8_t * dst = img.data();
+    uint8_t *dst = img.data();
 
     for (int y = int(float(*highest) / div_me); y >= 0; --y)
     {

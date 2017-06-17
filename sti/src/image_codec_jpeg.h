@@ -22,20 +22,20 @@ class jpeg_decoder
 public:
     jpeg_decoder()
     {
-        //decompress_handle_ = ujCreate();
-        
+        // decompress_handle_ = ujCreate();
     }
 
     ~jpeg_decoder()
     {
-        //ujDestroy(decompress_handle_);
+        // ujDestroy(decompress_handle_);
     }
 
     sti::image_color decompress_YUV(memory_file &src)
     {
         uj.decode(src.data(), src.size());
 
-        image_color::image_info info(uj.getWidth(), uj.getHeight(), 3, uj.getPlane(0)->stride, image_color::image_format::YUV420);
+        image_color::image_info info(uj.getWidth(), uj.getHeight(), 3, uj.getPlane(0)->stride,
+                                     image_color::image_format::YUV420);
         image_color img(info);
 
         // \me crosses his fingers I allocated enought mem
@@ -45,10 +45,9 @@ public:
         return img;
     }
 
-    //ujImage decompress_handle_;
+    // ujImage decompress_handle_;
     uJPEG uj;
 };
-
 
 #if 0
 

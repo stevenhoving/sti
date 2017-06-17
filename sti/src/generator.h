@@ -17,7 +17,7 @@ static sti::image<T> create_checker_board(int width, int height, int rows, int c
     int data_size = image.width() * image.height();
     static int colors[] = {0, 0xFF};
 
-    for (int i = 0; i < data_size; i+=row_width)
+    for (int i = 0; i < data_size; i += row_width)
     {
         uint8_t *chunk = &image.data()[i];
 

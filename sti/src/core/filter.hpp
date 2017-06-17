@@ -7,8 +7,8 @@
 
 namespace sti
 {
-template<typename T, typename F>
-sti::core::image<T> apply_filter(const sti::core::image<T>& src, F filter)
+template <typename T, typename F>
+sti::core::image<T> apply_filter(const sti::core::image<T> &src, F filter)
 {
     const auto y_max = src.height();
     const auto x_max = src.width();
@@ -30,7 +30,6 @@ sti::core::filter::kernel<T, Size> make_kernel()
 
 }
 */
-
 
 /*namespace filter
 {
@@ -85,6 +84,5 @@ void apply_kernel(const sti::image<T>& src, sti::image<T>& dst, K kernel)
 }
 
 #endif
-
 
 } // namespace sti

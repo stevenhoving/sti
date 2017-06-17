@@ -16,11 +16,11 @@ namespace emboss
   0  1  1  1  1
 */
 
-template<typename T, int Size>
+template <typename T, int Size>
 kernel<T, Size> make_kernel()
 {
     kernel<T, Size> kern;
-    int diagonal_line = Size-1;
+    int diagonal_line = Size - 1;
     for (auto y = 0; y < Size; ++y)
     {
         for (auto x = 0; x < Size; ++x)

@@ -15,12 +15,13 @@ namespace sti
 {
 namespace core
 {
-template<typename T>
+template <typename T>
 class image
 {
     using value_type = std::vector<T>;
     using iterator_type = typename value_type::iterator;
     using const_iterator_type = typename value_type::const_iterator;
+
 public:
     image()
         : image(0, 0, 0)
@@ -40,8 +41,7 @@ public:
     {
     }
 
-    explicit image(const uint8_t *data, const int width, const int height,
-                   const int stride)
+    explicit image(const uint8_t *data, const int width, const int height, const int stride)
         : image(width, height, stride)
     {
         sti::detail::image::normalize_image(data, &data_[0], width_, height_);
@@ -53,13 +53,13 @@ public:
     }
 
     // how about the power to move you
-    image(image&& other) = default;
-    image & operator=(image &&other) = default;
+    image(image &&other) = default;
+    image &operator=(image &&other) = default;
 
     // we don't want to copy our image, we only want to move it or explicitly
     // clone it
     image(const image &) = delete;
-    image& operator=(const image &) = delete;
+    image &operator=(const image &) = delete;
 
     inline iterator_type begin()
     {
@@ -114,6 +114,7 @@ public:
         auto index = (y * stride_) + x;
         return data_[index];
     }
+
 private:
     int width_ = 0;
     int height_ = 0;
@@ -133,23 +134,21 @@ sti::core::image<T> read(const std::string &filename)
 template <typename T>
 void write(const sti::core::image<T> &src, const std::string &filename)
 {
-    //sti::detail::memory_file file(filename.c_str());
-    //file.load();
+    // sti::detail::memory_file file(filename.c_str());
+    // file.load();
 
     auto image = std::vector<uint8_t>(src.width() * src.height());
-    sti::detail::image::denormalize_image<T>(src.data(), &image[0], src.width(),
-        src.height());
+    sti::detail::image::denormalize_image<T>(src.data(), &image[0], src.width(), src.height());
 
-    //for (int i = 0; i < src.width() * src.height(); ++i)
-        // \todo clamp pixel first from 0.0 to 1.0 before multiply
-        //image[i] = static_cast<uint8_t>(
-            //src.data()[i] * static_cast<T>(255.0));
+    // for (int i = 0; i < src.width() * src.height(); ++i)
+    // \todo clamp pixel first from 0.0 to 1.0 before multiply
+    // image[i] = static_cast<uint8_t>(
+    // src.data()[i] * static_cast<T>(255.0));
 
-    //save_internal(image.data(), src.width(), src.height(), filename);
+    // save_internal(image.data(), src.width(), src.height(), filename);
 
-    sti::detail::codec::bmp::save(image.data(), src.width(), src.height(),
-        filename.c_str());
-    //sti::detail::codec::bmp::save(image.data(), src.width(), src.height(),
+    sti::detail::codec::bmp::save(image.data(), src.width(), src.height(), filename.c_str());
+    // sti::detail::codec::bmp::save(image.data(), src.width(), src.height(),
     //   filename.c_str());
 }
 
@@ -160,15 +159,13 @@ sti::core::image<T> to_image(sti::detail::image_color &src)
     {
         // nice we are aligned, and we can blindly create the sti image from
         // our y channel
-        return sti::core::image<T>(src.data(), src.width(), src.height(),
-            src.stride());
+        return sti::core::image<T>(src.data(), src.width(), src.height(), src.stride());
     }
     else
     {
         // fuck we need to 'fix' the alignment as our sti::image can not handle
         // it (yet)
-        auto result = sti::core::image<T>(src.width(), src.height(),
-            src.stride());
+        auto result = sti::core::image<T>(src.width(), src.height(), src.stride());
 
         auto data = src.data();
         auto dest = result.data();
@@ -195,38 +192,30 @@ sti::core::image<T> to_image(sti::detail::image_color &src)
 using image = core::image<uint8_t>;
 
 template <typename T = uint8_t>
-static
-auto read_image(const std::string &filename)
+static auto read_image(const std::string &filename)
 {
     return sti::core::read<T>(filename);
 }
 
 template <typename T>
-static
-void write_image(const sti::core::image<T> &img, const std::string &filename)
+static void write_image(const sti::core::image<T> &img, const std::string &filename)
 {
     sti::core::write(img, filename);
 }
 
 template <typename T>
-static
-void resize_image(const sti::core::image<T> &src, sti::core::image<T> &dst)
+static void resize_image(const sti::core::image<T> &src, sti::core::image<T> &dst)
 {
-    sti::detail::image_resize::resize_bilinear(
-        src.data(), src.width(), src.height(),
-        dst.data(), dst.width(), dst.height()
-    );
+    sti::detail::image_resize::resize_bilinear(src.data(), src.width(), src.height(), dst.data(), dst.width(),
+                                               dst.height());
 }
 
 template <typename T>
-static
-sti::core::image<T> resize_image_copy(const sti::core::image<T> &src, const int width, const int height)
+static sti::core::image<T> resize_image_copy(const sti::core::image<T> &src, const int width, const int height)
 {
     sti::core::image<T> dst(width, height);
-    sti::detail::image_resize::resize_bilinear(
-        src.data(), src.width(), src.height(),
-        dst.data(), dst.width(), dst.height()
-    );
+    sti::detail::image_resize::resize_bilinear(src.data(), src.width(), src.height(), dst.data(), dst.width(),
+                                               dst.height());
     return dst;
 }
 

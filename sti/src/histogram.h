@@ -8,7 +8,7 @@
 
 namespace sti
 {
-template<typename T>
+template <typename T>
 class histogram_core
 {
 public:
@@ -39,7 +39,7 @@ public:
 
 using histogram = histogram_core<uint32_t>;
 
-template<typename T>
+template <typename T>
 histogram to_histogram(const image<T> &src)
 {
     histogram result;
@@ -50,7 +50,7 @@ histogram to_histogram(const image<T> &src)
     return result;
 }
 
-template<>
+template <>
 histogram to_histogram<uint8_t>(const image<uint8_t> &src)
 {
     histogram result;

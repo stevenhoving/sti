@@ -5,15 +5,13 @@
 #include <cstdint>
 //#include <cstring>
 
-
 namespace sti
 {
-
 
 namespace image_filter
 {
 
-//struct __attribute__((__packed__)) block
+// struct __attribute__((__packed__)) block
 template <typename T>
 struct __declspec(align(1)) block
 {
@@ -21,14 +19,16 @@ struct __declspec(align(1)) block
     T p1;
     T p2;
 
-    //inline unsigned int sum() const { return p0 + p1 + p2; }
+    // inline unsigned int sum() const { return p0 + p1 + p2; }
 
     // fuck.... I want it to return a int when we deal with uint8_t but T when we deal with float or double.
-    inline T sum() const { return p0 + p1 + p2; }
+    inline T sum() const
+    {
+        return p0 + p1 + p2;
+    }
 };
 
-//static_assert(sizeof(block) == 3, "");
-
+// static_assert(sizeof(block) == 3, "");
 
 #if 0
 void low_pass_3x3(const sti::image& src, sti::image& dst)
@@ -100,8 +100,8 @@ int low_pass_3x3(const bbyuv::image& src, bbyuv::image& dst)
 
 #else
 
-template<typename T>
-void low_pass_3x3(const sti::image<T>& src, sti::image<T>& dst)
+template <typename T>
+void low_pass_3x3(const sti::image<T> &src, sti::image<T> &dst)
 {
     int width = src.width();
     int height = src.height();
@@ -110,17 +110,17 @@ void low_pass_3x3(const sti::image<T>& src, sti::image<T>& dst)
 
     for (int j = 0; j < height - 2; ++j)
     {
-        T * line0 = &src.data()[(j) * width];
-        T * line1 = &src.data()[(j + 1) * width];
-        T * line2 = &src.data()[(j + 2) * width];
+        T *line0 = &src.data()[(j)*width];
+        T *line1 = &src.data()[(j + 1) * width];
+        T *line2 = &src.data()[(j + 2) * width];
 
-        //uint8_t * dst_pixel = &dst.data()[(j + 1) * width];
+        // uint8_t * dst_pixel = &dst.data()[(j + 1) * width];
 
         for (int i = 0; i < width - 2; ++i)
         {
-            const block<T> * l0 = (const block<T> *)&line0[i];
-            const block<T> * l1 = (const block<T> *)&line1[i];
-            const block<T> * l2 = (const block<T> *)&line2[i];
+            const block<T> *l0 = (const block<T> *)&line0[i];
+            const block<T> *l1 = (const block<T> *)&line1[i];
+            const block<T> *l2 = (const block<T> *)&line2[i];
 
             auto sum = l0->sum() + l1->sum() + l2->sum();
             dst.data()[(j * width) + i] = sum / static_cast<T>(9.0);
@@ -255,8 +255,8 @@ inline T clamp(const T value, const T min, const T max)
     return std::min<T>(std::max<T>(value, min), max);
 }
 
-template<typename T, typename K>
-void apply_kernel(const sti::image<T>& src, sti::image<T>& dst, K kernel)
+template <typename T, typename K>
+void apply_kernel(const sti::image<T> &src, sti::image<T> &dst, K kernel)
 {
     const int half_kernel_size = kernel.size() / 2;
     for (int y = 0; y < src.height(); ++y)
@@ -268,45 +268,49 @@ void apply_kernel(const sti::image<T>& src, sti::image<T>& dst, K kernel)
             {
                 for (int j = -half_kernel_size; j <= half_kernel_size; j++)
                 {
-                    //x1 = circular(src.cols, x - j);
-                    //y1 = circular(src.rows, y - k);
-                    //sum = sum + kernel[j + 1][k + 1] * src.data()[index];
+                    // x1 = circular(src.cols, x - j);
+                    // y1 = circular(src.rows, y - k);
+                    // sum = sum + kernel[j + 1][k + 1] * src.data()[index];
 
                     // we only do clamp... atm... which is the worst option of all
-                    int x1 = std::max(0, x - j);  x1 = std::min(x1, src.width()-1);
-                    int y1 = std::max(0, y - k);  y1 = std::min(y1, src.height()-1);
+                    int x1 = std::max(0, x - j);
+                    x1 = std::min(x1, src.width() - 1);
+                    int y1 = std::max(0, y - k);
+                    y1 = std::min(y1, src.height() - 1);
 
-                    //int index = ((y - k) * src.width()) + (x - j);
+                    // int index = ((y - k) * src.width()) + (x - j);
                     const int index = (y1 * src.width()) + x1;
 
-                    sum = sum + kernel[j+kernel.size()/2][k+kernel.size()/2] * (double)src.data()[index];
+                    sum = sum + kernel[j + kernel.size() / 2][k + kernel.size() / 2] * (double)src.data()[index];
                 }
             }
             int index = (y * src.width()) + x;
             double pixel = (kernel.factor * sum) + kernel.offset;
 
             // use templated limit shit
-            //pixel = std::min(std::max(pixel, 0.0), 255.0);
-            //pixel = std::min<T>(std::max<T>(pixel, sti::pixel_min<T>()), sti::pixel_max<T>());
+            // pixel = std::min(std::max(pixel, 0.0), 255.0);
+            // pixel = std::min<T>(std::max<T>(pixel, sti::pixel_min<T>()), sti::pixel_max<T>());
             pixel = clamp<T>(pixel, sti::pixel_min<T>(), sti::pixel_max<T>());
             dst.data()[index] = static_cast<T>(pixel);
         }
     }
 }
 
-template<typename T, typename K>
-double convolution(const sti::image<T>& src, const int x, const int y, K kernel)
+template <typename T, typename K>
+double convolution(const sti::image<T> &src, const int x, const int y, K kernel)
 {
     const int half_kernel_size = kernel.size() / 2;
-    
+
     double sum = 0.0;
     for (int k = -half_kernel_size; k <= half_kernel_size; ++k)
     {
         for (int j = -half_kernel_size; j <= half_kernel_size; ++j)
         {
             // we do clamp here... which is BADDDD
-            int x1 = std::max(0, x - j); x1 = std::min(x1, src.width() - 1);
-            int y1 = std::max(0, y - k); y1 = std::min(y1, src.height() - 1);
+            int x1 = std::max(0, x - j);
+            x1 = std::min(x1, src.width() - 1);
+            int y1 = std::max(0, y - k);
+            y1 = std::min(y1, src.height() - 1);
 
             const int index = (y1 * src.width()) + x1;
 
@@ -317,8 +321,8 @@ double convolution(const sti::image<T>& src, const int x, const int y, K kernel)
 }
 
 // hacky.. only applies for sobel edge detection
-template<typename T, typename K>
-void apply_kernels(const sti::image<T>& src, sti::image<T>& dst, K h_kernel, K v_kernel)
+template <typename T, typename K>
+void apply_kernels(const sti::image<T> &src, sti::image<T> &dst, K h_kernel, K v_kernel)
 {
     for (int y = 0; y < src.height(); ++y)
     {
@@ -346,9 +350,9 @@ void apply_kernels(const sti::image<T>& src, sti::image<T>& dst, K h_kernel, K v
                 }
             }
 #endif
-            
+
             int index = (y * src.width()) + x;
-            //double pixel = (kernel.factor * sum) + kernel.offset;
+            // double pixel = (kernel.factor * sum) + kernel.offset;
 
             // have some sort of templated limit
             sum = std::min(std::max(sum, 0.0), 255.0);

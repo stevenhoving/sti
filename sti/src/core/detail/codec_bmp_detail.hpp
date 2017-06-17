@@ -26,14 +26,14 @@ struct _BITMAPFILEHEADER
 struct _BITMAPINFOHEADER
 {
     uint32_t biSize;
-    int32_t  biWidth;
-    int32_t  biHeight;
+    int32_t biWidth;
+    int32_t biHeight;
     uint16_t biPlanes;
     uint16_t biBitCount;
     uint32_t biCompression;
     uint32_t biSizeImage;
-    int32_t  biXPelsPerMeter;
-    int32_t  biYPelsPerMeter;
+    int32_t biXPelsPerMeter;
+    int32_t biYPelsPerMeter;
     uint32_t biClrUsed;
     uint32_t biClrImportant;
 };
@@ -77,8 +77,7 @@ void save(sti::image<uint8_t> &src, const char *filename)
 }
 */
 
-static
-void save(const uint8_t *src, const int width, const int height, const char *filename)
+static void save(const uint8_t *src, const int width, const int height, const char *filename)
 {
     auto width_padd = align_up(width, 4);
 
@@ -129,8 +128,8 @@ void save(const uint8_t *src, const int width, const int height, const char *fil
             {
                 pixel = 0;
                 fwrite(&pixel, 1, 1, filePtr);
-                //uint8_t pixel4[4] = {0};
-                //fwrite(&pixel4, 2, 1, filePtr);
+                // uint8_t pixel4[4] = {0};
+                // fwrite(&pixel4, 2, 1, filePtr);
             }
             else
             {

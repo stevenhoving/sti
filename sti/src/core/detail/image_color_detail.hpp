@@ -51,21 +51,40 @@ public:
     {
     }
 
-    inline const image_info & info() const { return info_;}
+    inline const image_info &info() const
+    {
+        return info_;
+    }
 
-    inline size_t size() { return buffer_.size(); }
-    inline uint8_t *data() { return const_cast<uint8_t *>(buffer_.data()); }
+    inline size_t size()
+    {
+        return buffer_.size();
+    }
+    inline uint8_t *data()
+    {
+        return const_cast<uint8_t *>(buffer_.data());
+    }
 
     /* how about the power to move you*/
-    image_color(image_color&& other) = default;
-    image_color &operator = (image_color &&other) = default;
+    image_color(image_color &&other) = default;
+    image_color &operator=(image_color &&other) = default;
     /* we need no copy stuff */
-    image_color(image_color const&) = delete;
-    image_color& operator=(image_color const&) = delete;
+    image_color(image_color const &) = delete;
+    image_color &operator=(image_color const &) = delete;
 
-    inline int width() const { return info_.width; }
-    inline int height() const { return info_.height; }
-    inline int stride() const { return info_.stride; }
+    inline int width() const
+    {
+        return info_.width;
+    }
+    inline int height() const
+    {
+        return info_.height;
+    }
+    inline int stride() const
+    {
+        return info_.stride;
+    }
+
 private:
     image_info info_;
     std::vector<uint8_t> buffer_;
