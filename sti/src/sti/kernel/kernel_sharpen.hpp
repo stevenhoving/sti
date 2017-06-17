@@ -1,5 +1,7 @@
 #pragma once
 
+#include <sti/kernel/kernel.hpp>
+
 namespace sti
 {
 namespace kernel

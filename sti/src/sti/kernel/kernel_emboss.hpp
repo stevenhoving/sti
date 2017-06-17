@@ -1,5 +1,6 @@
 #pragma once
 
+#include <sti/kernel/kernel.hpp>
 #include <sti/pixel_values.hpp>
 
 namespace sti
