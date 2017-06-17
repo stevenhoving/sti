@@ -1,13 +1,13 @@
-#include "tests.hpp"
+#include <gtest/gtest.h>
 
-#include "../image.hpp"
-#include "../histogram.hpp"
-
+#include <core/image.hpp>
+#include <core/histogram.hpp>
 #include <string>
+
 
 using namespace std::string_literals;
 
-void test_histogram()
+TEST(test_histogram, test_write_histogram_image)
 {
     auto path = "D:/dev/sti/data/DSC_7000.jpg"s;
     auto image = sti::read_image(path);

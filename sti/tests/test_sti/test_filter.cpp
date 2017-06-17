@@ -1,20 +1,17 @@
-#include "tests.hpp"
+#include <gtest/gtest.h>
 
-#include "core/image.hpp"
-#include "core/histogram.hpp"
-#include "core/filter.hpp"
-#include "core/filter/filter_mean_shift.hpp"
-#include "core/filter/filter_threshold_adaptive_bradley.hpp"
-#include "core/filter/filter_lowpass.hpp"
+#include <core/image.hpp>
+#include <core/histogram.hpp>
+#include <core/filter.hpp>
+#include <core/filter/filter_mean_shift.hpp>
+#include <core/filter/filter_threshold_adaptive_bradley.hpp>
+#include <core/filter/filter_lowpass.hpp>
 
-#include "stop_watch.h"
-
-#include <cstdio>
 #include <string>
 
 using namespace std::string_literals;
 
-void test_filter()
+TEST(test_filter, test_apply_filter)
 {
     auto path = "D:/dev/sti/data/DSC_7000.jpg"s;
     auto image = sti::read_image(path);
@@ -29,7 +26,7 @@ void test_filter()
     //sti::write_image(image, "D:/dev/sti/data/DSC_7000_gray.bmp");
 }
 
-void test_mean_shift_filter()
+TEST(test_filter, test_mean_shift_filter)
 {
     auto path = "D:/dev/sti/data/DSC_7000.jpg"s;
     auto image = sti::read_image(path);
@@ -44,7 +41,7 @@ void test_mean_shift_filter()
     sti::write_image(dst, "D:/dev/sti/data/mean-shift.bmp");
 }
 
-void test_threshold_adaptive_bradley()
+TEST(test_filter, test_threshold_adaptive_bradley)
 {
     auto path = "D:/dev/sti/data/DSC_7000.jpg"s;
     auto image = sti::read_image(path);

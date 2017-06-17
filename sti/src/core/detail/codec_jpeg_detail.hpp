@@ -3,6 +3,7 @@
 #include "image_color_detail.hpp"
 #include "memory_file.hpp"
 
+#if 0
 #include <ujpeg/ujpeg.h>
 
 namespace sti {
@@ -34,3 +35,5 @@ static sti::detail::image_color decompress_YUV(sti::detail::memory_file &src)
 } // namespace codec
 } // namespace detail
 } // namespace sti
+
+#endif
