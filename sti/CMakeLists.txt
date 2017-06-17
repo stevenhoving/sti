@@ -43,6 +43,7 @@ set(STI_KERNEL_SOURCES
     src/sti/kernel/kernel_edge.hpp
     src/sti/kernel/kernel_emboss.hpp
     src/sti/kernel/kernel_sharpen.hpp
+    src/sti/kernel/kernel_sobel.hpp
 )
 
 source_group(kernel FILES ${STI_KERNEL_SOURCES})

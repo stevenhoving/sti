@@ -7,6 +7,41 @@ namespace sti
 namespace kernel
 {
 
+template <typename T, int Size>
+class kernelh
+{
+public:
+    kernelh(const std::array<T, Size> &kern)
+        : data_(kern)
+    {
+    }
+
+    const T operator[](int x) const
+    {
+        return data_[x];
+    }
+private:
+    std::array<T, Size> data_;
+};
+
+template <typename T, int Size>
+class kernelv
+{
+public:
+    kernelv(const std::array<T, Size> &kern)
+        : data_(kern)
+    {
+    }
+
+    const T operator[](int y) const
+    {
+        return data_[y];
+    }
+private:
+    std::array<T, Size> data_;
+};
+
+
 /*!
  * convolution story.
  */
@@ -79,6 +114,36 @@ public:
 private:
     value_type data_;
 };
+
+template <typename T, int Size>
+kernel<T, Size> operator*(const kernelv<T, Size> &left, const kernelh<T, Size> &right)
+{
+    kernel<T, Size> kern;
+    for (int y = 0; y < Size; ++y)
+    {
+        for (int x = 0; x < Size; ++x)
+        {
+            kern[x][y] = left[x] * right[y];
+        }
+    }
+
+    return kern;
+}
+
+template <typename T, int Size>
+kernel<T, Size> operator*(const kernelh<T, Size> &left, const kernelv<T, Size> &right)
+{
+    kernel<T, Size> kern;
+    for (int y = 0; y < Size; ++y)
+    {
+        for (int x = 0; x < Size; ++x)
+        {
+            kern[x][y] = left[x] * right[y];
+        }
+    }
+
+    return kern;
+}
 
 } // namespace kernel
 } // namespace sti

@@ -12,188 +12,115 @@
 #include <sti/kernel/kernel_edge.hpp>
 #include <sti/kernel/kernel_emboss.hpp>
 #include <sti/kernel/kernel_sharpen.hpp>
+#include <sti/kernel/kernel_sobel.hpp>
 #include <aeon/streams/file_stream.h>
 #include <build_config.h>
+#include <string>
+
+namespace filter_test
+{
+template <typename pixel_type_t, int slice_count_t>
+sti::image<pixel_type_t, slice_count_t> load_png(const char *path)
+{
+    std::string file_path = STI_TEST_DATA_PATH;
+    file_path += "/";
+    file_path += path;
+
+    auto stream = aeon::streams::file_stream(file_path);
+    auto image = sti::codecs::png::decode(stream);
+
+    return sti::convert_image<pixel_type_t, slice_count_t>::from_color_image(image);
+}
+
+template <typename pixel_type_t, int slice_count_t>
+void save_png(const sti::image<pixel_type_t, slice_count_t> &image, const char *path)
+{
+    auto new_color_image = sti::convert_image<pixel_type_t, slice_count_t>::to_color_image(image);
+
+    auto output_stream = aeon::streams::file_stream(path, aeon::streams::access_mode::write |
+        aeon::streams::access_mode::truncate);
+    sti::codecs::png::encode(new_color_image, output_stream);
+}
+
+template <typename pixel_type_t, int slice_count_t, typename K>
+auto apply_kernel(const sti::image<pixel_type_t, slice_count_t> &image, const K &kernel) -> sti::image<pixel_type_t, slice_count_t>
+{
+    auto filtered_image = sti::image<pixel_type_t, slice_count_t>(image.width(), image.height(), image.stride());
+    for (int i = 0; i < slice_count_t; ++i)
+        sti::filter::apply_kernel(image.get_slice(i), filtered_image.get_slice(i), kernel);
+
+    return filtered_image;
+}
+} // filter_test
 
 TEST(test_filter, test_apply_lowpass_filter)
 {
-    auto stream = aeon::streams::file_stream(STI_TEST_DATA_PATH "/DSC_7000.png");
-    auto image = sti::color_image();
-    ASSERT_NO_THROW(image = sti::codecs::png::decode(stream));
-
-    auto result = sti::convert_image<std::uint8_t, 4>::from_color_image(image);
-    auto filtered_image = sti::image<std::uint8_t, 4>(result.width(), result.height(), result.stride());
-
+    auto image = filter_test::load_png<std::uint8_t, 4>("DSC_7000.png");
     auto kernel = sti::kernel::lowpass::make_kernel<float, 3>();
-    sti::filter::apply_kernel(result.get_slice(0), filtered_image.get_slice(0), kernel);
-    sti::filter::apply_kernel(result.get_slice(1), filtered_image.get_slice(1), kernel);
-    sti::filter::apply_kernel(result.get_slice(2), filtered_image.get_slice(2), kernel);
-    sti::filter::apply_kernel(result.get_slice(3), filtered_image.get_slice(3), kernel);
-
-    auto new_color_image = sti::convert_image<std::uint8_t, 4>::to_color_image(filtered_image);
-
-    auto output_stream = aeon::streams::file_stream("DSC_7000_lowpass_filtered.png", aeon::streams::access_mode::write |
-                                                                                 aeon::streams::access_mode::truncate);
-    sti::codecs::png::encode(new_color_image, output_stream);
+    auto filtered_image = filter_test::apply_kernel(image, kernel);
+    filter_test::save_png<std::uint8_t, 4>(filtered_image, "DSC_7000_lowpass_filtered.png");
 }
 
 TEST(test_filter, test_apply_gaussian_filter)
 {
-    auto stream = aeon::streams::file_stream(STI_TEST_DATA_PATH "/DSC_7000.png");
-    auto image = sti::color_image();
-    ASSERT_NO_THROW(image = sti::codecs::png::decode(stream));
-
-    auto result = sti::convert_image<std::uint8_t, 4>::from_color_image(image);
-    auto filtered_image = sti::image<std::uint8_t, 4>(result.width(), result.height(), result.stride());
-
+    auto image = filter_test::load_png<std::uint8_t, 4>("DSC_7000.png");
     auto kernel = sti::kernel::gaussian::make_kernel<float, 3>();
-    sti::filter::apply_kernel(result.get_slice(0), filtered_image.get_slice(0), kernel);
-    sti::filter::apply_kernel(result.get_slice(1), filtered_image.get_slice(1), kernel);
-    sti::filter::apply_kernel(result.get_slice(2), filtered_image.get_slice(2), kernel);
-    sti::filter::apply_kernel(result.get_slice(3), filtered_image.get_slice(3), kernel);
-
-    auto new_color_image = sti::convert_image<std::uint8_t, 4>::to_color_image(filtered_image);
-
-    auto output_stream = aeon::streams::file_stream("DSC_7000_gaussian_filtered.png", aeon::streams::access_mode::write |
-        aeon::streams::access_mode::truncate);
-    sti::codecs::png::encode(new_color_image, output_stream);
+    auto filtered_image = filter_test::apply_kernel(image, kernel);
+    filter_test::save_png<std::uint8_t, 4>(filtered_image, "DSC_7000_gaussian_filtered.png");
 }
 
 TEST(test_filter, test_apply_edge_filter)
 {
-    auto stream = aeon::streams::file_stream(STI_TEST_DATA_PATH "/DSC_7000.png");
-    auto image = sti::color_image();
-    ASSERT_NO_THROW(image = sti::codecs::png::decode(stream));
-
-    auto result = sti::convert_image<std::uint8_t, 4>::from_color_image(image);
-    auto filtered_image = sti::image<std::uint8_t, 4>(result.width(), result.height(), result.stride());
-
+    auto image = filter_test::load_png<std::uint8_t, 4>("DSC_7000.png");
     auto kernel = sti::kernel::edge::make_kernel<float, 3>();
-    sti::filter::apply_kernel(result.get_slice(0), filtered_image.get_slice(0), kernel);
-    sti::filter::apply_kernel(result.get_slice(1), filtered_image.get_slice(1), kernel);
-    sti::filter::apply_kernel(result.get_slice(2), filtered_image.get_slice(2), kernel);
-    sti::filter::apply_kernel(result.get_slice(3), filtered_image.get_slice(3), kernel);
-
-    auto new_color_image = sti::convert_image<std::uint8_t, 4>::to_color_image(filtered_image);
-
-    auto output_stream = aeon::streams::file_stream("DSC_7000_edge_filtered.png", aeon::streams::access_mode::write |
-        aeon::streams::access_mode::truncate);
-    sti::codecs::png::encode(new_color_image, output_stream);
+    auto filtered_image = filter_test::apply_kernel(image, kernel);
+    filter_test::save_png<std::uint8_t, 4>(filtered_image, "DSC_7000_edge_filtered.png");
 }
 
 TEST(test_filter, test_apply_emboss_filter)
 {
-    auto stream = aeon::streams::file_stream(STI_TEST_DATA_PATH "/DSC_7000.png");
-    auto image = sti::color_image();
-    ASSERT_NO_THROW(image = sti::codecs::png::decode(stream));
-
-    auto result = sti::convert_image<std::uint8_t, 4>::from_color_image(image);
-    auto filtered_image = sti::image<std::uint8_t, 4>(result.width(), result.height(), result.stride());
-
+    auto image = filter_test::load_png<std::uint8_t, 4>("DSC_7000.png");
     auto kernel = sti::kernel::emboss::make_kernel<float, 3>();
-    sti::filter::apply_kernel(result.get_slice(0), filtered_image.get_slice(0), kernel);
-    sti::filter::apply_kernel(result.get_slice(1), filtered_image.get_slice(1), kernel);
-    sti::filter::apply_kernel(result.get_slice(2), filtered_image.get_slice(2), kernel);
-    sti::filter::apply_kernel(result.get_slice(3), filtered_image.get_slice(3), kernel);
-
-    auto new_color_image = sti::convert_image<std::uint8_t, 4>::to_color_image(filtered_image);
-
-    auto output_stream = aeon::streams::file_stream("DSC_7000_emboss_filtered.png", aeon::streams::access_mode::write |
-        aeon::streams::access_mode::truncate);
-    sti::codecs::png::encode(new_color_image, output_stream);
+    auto filtered_image = filter_test::apply_kernel(image, kernel);
+    filter_test::save_png<std::uint8_t, 4>(filtered_image, "DSC_7000_emboss_filtered.png");
 }
 
 TEST(test_filter, test_apply_sharpen_filter)
 {
-    auto stream = aeon::streams::file_stream(STI_TEST_DATA_PATH "/DSC_7000.png");
-    auto image = sti::color_image();
-    ASSERT_NO_THROW(image = sti::codecs::png::decode(stream));
-
-    auto result = sti::convert_image<std::uint8_t, 4>::from_color_image(image);
-    auto filtered_image = sti::image<std::uint8_t, 4>(result.width(), result.height(), result.stride());
-
+    auto image = filter_test::load_png<std::uint8_t, 4>("DSC_7000.png");
     auto kernel = sti::kernel::sharpen::make_kernel<float, 3>();
-    sti::filter::apply_kernel(result.get_slice(0), filtered_image.get_slice(0), kernel);
-    sti::filter::apply_kernel(result.get_slice(1), filtered_image.get_slice(1), kernel);
-    sti::filter::apply_kernel(result.get_slice(2), filtered_image.get_slice(2), kernel);
-    sti::filter::apply_kernel(result.get_slice(3), filtered_image.get_slice(3), kernel);
+    auto filtered_image = filter_test::apply_kernel(image, kernel);
+    filter_test::save_png<std::uint8_t, 4>(filtered_image, "DSC_7000_sharpen_filtered.png");
+}
 
-    auto new_color_image = sti::convert_image<std::uint8_t, 4>::to_color_image(filtered_image);
-
-    auto output_stream = aeon::streams::file_stream("DSC_7000_sharpen_filtered.png", aeon::streams::access_mode::write |
-        aeon::streams::access_mode::truncate);
-    sti::codecs::png::encode(new_color_image, output_stream);
+TEST(test_filter, test_apply_sobel_filter)
+{
+    auto image = filter_test::load_png<std::uint8_t, 4>("DSC_7000.png");
+    auto kernel = sti::kernel::sobel_horizontal::make_kernel<float, 3>();
+    auto filtered_image = filter_test::apply_kernel(image, kernel);
+    filter_test::save_png<std::uint8_t, 4>(filtered_image, "DSC_7000_sobel_horizontal_filtered.png");
 }
 
 TEST(test_filter, test_apply_mean_shift_filter)
 {
-    auto stream = aeon::streams::file_stream(STI_TEST_DATA_PATH "/DSC_7000.png");
-    auto image = sti::color_image();
-    ASSERT_NO_THROW(image = sti::codecs::png::decode(stream));
+    auto image = filter_test::load_png<std::uint8_t, 4>("DSC_7000.png");
+    auto filtered_image = sti::image<std::uint8_t, 4>(image.width(), image.height(), image.stride());
 
-    auto result = sti::convert_image<std::uint8_t, 4>::from_color_image(image);
-    auto filtered_image = sti::image<std::uint8_t, 4>(result.width(), result.height(), result.stride());
-
-    auto kernel = sti::kernel::lowpass::make_kernel<float, 3>();
-    sti::filter::filter_mean_shift(result.get_slice(0), filtered_image.get_slice(0), 8, 60.0f);
-    sti::filter::filter_mean_shift(result.get_slice(1), filtered_image.get_slice(1), 8, 60.0f);
-    sti::filter::filter_mean_shift(result.get_slice(2), filtered_image.get_slice(2), 8, 60.0f);
-    sti::filter::filter_mean_shift(result.get_slice(3), filtered_image.get_slice(3), 8, 60.0f);
-
-    auto new_color_image = sti::convert_image<std::uint8_t, 4>::to_color_image(filtered_image);
-
-    auto output_stream = aeon::streams::file_stream("DSC_7000_mean_shift_filtered.png", aeon::streams::access_mode::write |
-                                                                                 aeon::streams::access_mode::truncate);
-    sti::codecs::png::encode(new_color_image, output_stream);
+    sti::filter::filter_mean_shift(image.get_slice(0), filtered_image.get_slice(0), 8, 60.0f);
+    sti::filter::filter_mean_shift(image.get_slice(1), filtered_image.get_slice(1), 8, 60.0f);
+    sti::filter::filter_mean_shift(image.get_slice(2), filtered_image.get_slice(2), 8, 60.0f);
+    sti::filter::filter_mean_shift(image.get_slice(3), filtered_image.get_slice(3), 8, 60.0f);
+    filter_test::save_png<std::uint8_t, 4>(filtered_image, "DSC_7000_mean_shift_filtered.png");
 }
 
 TEST(test_filter, test_apply_threshold_adaptive_bradley)
 {
-    auto stream = aeon::streams::file_stream(STI_TEST_DATA_PATH "/DSC_7000.png");
-    auto image = sti::color_image();
-    ASSERT_NO_THROW(image = sti::codecs::png::decode(stream));
+    auto image = filter_test::load_png<std::uint8_t, 4>("DSC_7000.png");
+    auto filtered_image = sti::image<std::uint8_t, 4>(image.width(), image.height(), image.stride());
 
-    auto result = sti::convert_image<std::uint8_t, 4>::from_color_image(image);
-    auto filtered_image = sti::image<std::uint8_t, 4>(result.width(), result.height(), result.stride());
-
-    auto kernel = sti::kernel::lowpass::make_kernel<float, 3>();
-    sti::filter::filter_threshold_adaptive_bradley(result.get_slice(0), filtered_image.get_slice(0), 4, 0.1f);
-    sti::filter::filter_threshold_adaptive_bradley(result.get_slice(1), filtered_image.get_slice(1), 4, 0.1f);
-    sti::filter::filter_threshold_adaptive_bradley(result.get_slice(2), filtered_image.get_slice(2), 4, 0.1f);
-    sti::filter::filter_threshold_adaptive_bradley(result.get_slice(3), filtered_image.get_slice(3), 4, 0.1f);
-
-    auto new_color_image = sti::convert_image<std::uint8_t, 4>::to_color_image(filtered_image);
-
-    auto output_stream = aeon::streams::file_stream("DSC_7000_adaptive_bradley_filtered.png", aeon::streams::access_mode::write |
-                                                                                 aeon::streams::access_mode::truncate);
-    sti::codecs::png::encode(new_color_image, output_stream);
+    sti::filter::filter_threshold_adaptive_bradley(image.get_slice(0), filtered_image.get_slice(0), 4, 0.1f);
+    sti::filter::filter_threshold_adaptive_bradley(image.get_slice(1), filtered_image.get_slice(1), 4, 0.1f);
+    sti::filter::filter_threshold_adaptive_bradley(image.get_slice(2), filtered_image.get_slice(2), 4, 0.1f);
+    sti::filter::filter_threshold_adaptive_bradley(image.get_slice(3), filtered_image.get_slice(3), 4, 0.1f);
+    filter_test::save_png<std::uint8_t, 4>(filtered_image, "DSC_7000_adaptive_bradley_filtered.png");
 }
-
-
-#if 0
-TEST(test_filter, test_mean_shift_filter)
-{
-    auto path = "D:/dev/sti/data/DSC_7000.jpg"s;
-    auto image = sti::read_image(path);
-
-    auto dst = sti::image(image.width(), image.height());
-    auto dst_orig = sti::image(image.width(), image.height());
-
-    const int spatial_radius = 4;
-    const float color_distance = 25.f;
-
-    sti::core::filter_mean_shift(image, dst, spatial_radius, color_distance);
-    sti::write_image(dst, "D:/dev/sti/data/mean-shift.bmp");
-}
-
-TEST(test_filter, test_threshold_adaptive_bradley)
-{
-    auto path = "D:/dev/sti/data/DSC_7000.jpg"s;
-    auto image = sti::read_image(path);
-    image = sti::core::filter_lowpass_copy(image);
-    image = sti::core::filter_mean_shift_copy(image, 4, 25.f);
-    image = sti::core::filter_threshold_adaptive_bradley_copy(image, 25, 0.15f);
-    sti::write_image(image, "D:/dev/sti/data/threshold-adaptive-bradley.bmp");
-}
-
-#endif
