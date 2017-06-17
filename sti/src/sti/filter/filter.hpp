@@ -51,7 +51,7 @@ static void apply_kernel(const sti::slice<T> &src, sti::slice<T> &dst, const K &
                     const auto y1 = utility::clamp(y - k, 0, src.height() - 1);
                     const auto index = (y1 * src.width()) + x1;
 
-                    sum += kernel[j + half_kernel_size][k + half_kernel_size] * (float)src.data()[index];
+                    sum += kernel[j + half_kernel_size][k + half_kernel_size] * static_cast<float>(src.data()[index]);
                 }
             }
             const int index = (y * src.width()) + x;

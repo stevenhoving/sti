@@ -31,6 +31,7 @@ TEST(test_filter, test_apply_filter)
     sti::filter::apply_kernel(result.get_slice(0), filtered_image.get_slice(0), kernel);
     sti::filter::apply_kernel(result.get_slice(1), filtered_image.get_slice(1), kernel);
     sti::filter::apply_kernel(result.get_slice(2), filtered_image.get_slice(2), kernel);
+    sti::filter::apply_kernel(result.get_slice(3), filtered_image.get_slice(3), kernel);
 
     auto new_color_image = sti::convert_image<std::uint8_t, 4>::to_color_image(filtered_image);
 
