@@ -45,10 +45,15 @@ static void apply_kernel(const sti::slice<T> &src, sti::slice<T> &dst, const K &
                      *       clamped can become to dominant. Which can result in
                      *       weird looking pixels at the side.
                      *       Another way to handle this is to 'wrap' around but
-                     *       I doubt that it would yield good results.
-                     *
-                     * - We can also do wrap around, which is also weird.
-                     * - We could also fix this by 'expanding' the source image.
+                     *       I doubt that it would yield better results.
+                     *       The last option would be to expand the source image
+                     *       this would mean that we increase the width and height
+                     *       by half the kernel size on every side. This has the
+                     *       advantage that we would not need to check boundaries
+                     *       while applying the filter. And the resulting pixels
+                     *       on the border would look less weird because they
+                     *       are actually generated with the correct amount of
+                     *       source pixels.
                      */
                     const auto x1 = utility::clamp(x - j, 0, src.width() - 1);
                     const auto y1 = utility::clamp(y - k, 0, src.height() - 1);
