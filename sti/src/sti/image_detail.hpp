@@ -13,10 +13,10 @@ namespace detail
 template <typename pixel_type_t>
 static void normalize_image(const uint8_t *src, pixel_type_t *dst, const int width, const int height)
 {
-    constexpr auto min_value = pixel_values<pixel_type_t>::min_value() + 1;
-    constexpr auto max_value = pixel_values<pixel_type_t>::max_value();
+    constexpr auto max_src_value = pixel_values<std::uint8_t>::max_value();
+    constexpr auto max_dst_value = pixel_values<pixel_type_t>::max_value();
 
-    const auto factor = min_value / max_value;
+    constexpr auto factor = max_dst_value / max_src_value;
     for (auto i = 0; i < width * height; ++i)
         dst[i] = src[i] * factor;
 }
