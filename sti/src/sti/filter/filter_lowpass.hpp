@@ -5,7 +5,7 @@
 
 namespace sti
 {
-namespace core
+namespace filter
 {
 
 template <typename T>
@@ -24,5 +24,5 @@ sti::slice<T> filter_lowpass_copy(const sti::slice<T> &src)
     return dst;
 }
 
-} // namespace core
+} // namespace filter
 } // namespace sti

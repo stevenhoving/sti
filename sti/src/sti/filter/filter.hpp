@@ -18,6 +18,9 @@ class ifilter
 {
 public:
     virtual T operator()(const sti::slice<T> &src, const int y, const int x) const = 0;
+
+private:
+    ~ifilter() = default;
 };
 
 // \note this will get our selfs in a bad situation if somebody starts using 64 bit gray pixels

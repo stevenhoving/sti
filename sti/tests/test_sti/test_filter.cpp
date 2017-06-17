@@ -2,6 +2,7 @@
 
 #include <sti/image.hpp>
 #include <sti/filter/filter.hpp>
+#include <sti/filter/filter_mean_shift.hpp>
 #include <sti/color_image.hpp>
 #include <sti/codecs/codec_png.h>
 #include <sti/convert/convert_image.hpp>
@@ -9,17 +10,8 @@
 #include <aeon/streams/file_stream.h>
 #include <build_config.h>
 
-TEST(test_filter, test_apply_filter)
+TEST(test_filter, test_apply_lowpass_filter)
 {
-    // auto kernel = sti::filter::kernel::lowpass::make_kernel();
-    // auto kernel = sti::make_filter<sti::filter::kernel::lowpass<3, float>>();
-
-    // auto result = sti::apply_filter(image, kernel);
-    // auto filter = sti::make_filter(sti::make_kernel());
-
-    // auto result = sti::apply_filter(image, sti::make_kernel());
-    // sti::write_image(image, "D:/dev/sti/data/DSC_7000_gray.bmp");
-
     auto stream = aeon::streams::file_stream(STI_TEST_DATA_PATH "/DSC_7000.png");
     auto image = sti::color_image();
     ASSERT_NO_THROW(image = sti::codecs::png::decode(stream));
@@ -35,7 +27,29 @@ TEST(test_filter, test_apply_filter)
 
     auto new_color_image = sti::convert_image<std::uint8_t, 4>::to_color_image(filtered_image);
 
-    auto output_stream = aeon::streams::file_stream("DSC_7000_filtered.png", aeon::streams::access_mode::write |
+    auto output_stream = aeon::streams::file_stream("DSC_7000_lowpass_filtered.png", aeon::streams::access_mode::write |
+                                                                                 aeon::streams::access_mode::truncate);
+    sti::codecs::png::encode(new_color_image, output_stream);
+}
+
+TEST(test_filter, test_apply_mean_shift_filter)
+{
+    auto stream = aeon::streams::file_stream(STI_TEST_DATA_PATH "/DSC_7000.png");
+    auto image = sti::color_image();
+    ASSERT_NO_THROW(image = sti::codecs::png::decode(stream));
+
+    auto result = sti::convert_image<std::uint8_t, 4>::from_color_image(image);
+    auto filtered_image = sti::image<std::uint8_t, 4>(result.width(), result.height(), result.stride());
+
+    auto kernel = sti::kernel::lowpass::make_kernel<float, 3>();
+    sti::filter::filter_mean_shift(result.get_slice(0), filtered_image.get_slice(0), 8, 60.0f);
+    sti::filter::filter_mean_shift(result.get_slice(1), filtered_image.get_slice(1), 8, 60.0f);
+    sti::filter::filter_mean_shift(result.get_slice(2), filtered_image.get_slice(2), 8, 60.0f);
+    sti::filter::filter_mean_shift(result.get_slice(3), filtered_image.get_slice(3), 8, 60.0f);
+
+    auto new_color_image = sti::convert_image<std::uint8_t, 4>::to_color_image(filtered_image);
+
+    auto output_stream = aeon::streams::file_stream("DSC_7000_mean_shift_filtered.png", aeon::streams::access_mode::write |
                                                                                  aeon::streams::access_mode::truncate);
     sti::codecs::png::encode(new_color_image, output_stream);
 }
