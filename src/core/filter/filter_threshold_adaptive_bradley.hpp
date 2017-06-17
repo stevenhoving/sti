@@ -64,7 +64,7 @@ void filter_threshold_adaptive_bradley(const sti::core::image<T> &src, sti::core
             if (x1 < 0) x1 = 0;
             if (x2 >= src.width()) x2 = src.width() - 1;
             if (y1 < 0) y1 = 0;
-            if (y2 >= src.width()) y2 = src.width() - 1;
+            if (y2 >= src.height()) y2 = src.height() - 1;
 
             const auto count = (x2 - x1)*(y2 - y1);
 
