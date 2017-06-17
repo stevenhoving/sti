@@ -1,5 +1,7 @@
 #pragma once
 
+#include <sti/pixel_values.hpp>
+
 namespace sti
 {
 namespace kernel
@@ -39,7 +41,7 @@ kernel<T, Size> make_kernel()
     }
 
     kern.factor = 1.0;
-    kern.offset = 128.0;
+    kern.offset = pixel_values<T>::center_value();
     return kern;
 }
 

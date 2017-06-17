@@ -24,6 +24,11 @@ struct pixel_values
     {
         return max_value();
     }
+
+    static constexpr auto center_value()
+    {
+        return max_value() / static_cast<pixel_type_t>(2);
+    }
 };
 
 template <>
@@ -42,6 +47,11 @@ struct pixel_values<float>
     static constexpr auto default_value()
     {
         return max_value();
+    }
+
+    static constexpr auto center_value()
+    {
+        return static_cast<float>(0.5);
     }
 };
 
