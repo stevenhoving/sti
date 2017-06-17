@@ -54,6 +54,11 @@ public:
         return &data_[y * Size];
     }
 
+    inline T *operator[](const int y)
+    {
+        return &data_[y * Size];
+    }
+
     T factor = static_cast<T>(1.0);
     T offset = static_cast<T>(0.0);
 

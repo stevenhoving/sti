@@ -39,9 +39,16 @@ source_group(filter FILES ${STI_FILTER_SOURCES})
 set(STI_KERNEL_SOURCES
     src/sti/kernel/kernel.hpp
     src/sti/kernel/kernel_lowpass.hpp
+    src/sti/kernel/kernel_gaussian.hpp
 )
 
 source_group(kernel FILES ${STI_KERNEL_SOURCES})
+
+set(STI_MATH_SOURCES
+    src/sti/math/math_constants.hpp
+)
+
+source_group(math FILES ${STI_MATH_SOURCES})
 
 add_library(sti STATIC
     ${STI_CORE_SOURCES}
