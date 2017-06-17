@@ -1,5 +1,4 @@
 #include <gtest/gtest.h>
-
 #include <sti/image.hpp>
 
 TEST(test_image, default_stride_value)

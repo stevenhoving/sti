@@ -61,7 +61,7 @@ image<pixel_type_t, slice_count_t>::image(const int width, const int height, con
     , slices_()
 {
     for (auto i = 0; i < slice_count_t; ++i)
-        slices_[i] = slice<pixel_type_t>(height_, stride_);
+        slices_[i] = slice<pixel_type_t>(width_, height_, stride_);
 }
 
 template <typename pixel_type_t, int slice_count_t>

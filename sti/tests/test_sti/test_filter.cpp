@@ -1,23 +1,17 @@
 #include <gtest/gtest.h>
 
-#if 0
+#include <sti/image.hpp>
+#include <sti/filter/filter.hpp>
+#include <sti/color_image.hpp>
+#include <sti/codecs/codec_png.h>
+#include <sti/convert/convert_image.hpp>
+#include <sti/kernel/kernel_lowpass.hpp>
+#include <aeon/streams/file_stream.h>
+#include <build_config.h>
 
-#include <core/image.hpp>
-#include <core/histogram.hpp>
-#include <core/filter.hpp>
-#include <core/filter/filter_mean_shift.hpp>
-#include <core/filter/filter_threshold_adaptive_bradley.hpp>
-#include <core/filter/filter_lowpass.hpp>
-
-#include <string>
-
-using namespace std::string_literals;
 
 TEST(test_filter, test_apply_filter)
 {
-    auto path = "D:/dev/sti/data/DSC_7000.jpg"s;
-    auto image = sti::read_image(path);
-
     // auto kernel = sti::filter::kernel::lowpass::make_kernel();
     // auto kernel = sti::make_filter<sti::filter::kernel::lowpass<3, float>>();
 
@@ -26,8 +20,25 @@ TEST(test_filter, test_apply_filter)
 
     // auto result = sti::apply_filter(image, sti::make_kernel());
     // sti::write_image(image, "D:/dev/sti/data/DSC_7000_gray.bmp");
+
+    auto stream = aeon::streams::file_stream(STI_TEST_DATA_PATH "/DSC_7000.png");
+    auto image = sti::color_image();
+    ASSERT_NO_THROW(image = sti::codecs::png::decode(stream));
+
+    auto result = sti::convert_image<std::uint8_t, 4>::from_color_image(image);
+    auto filtered_image = sti::image<std::uint8_t, 4>(result.width(), result.height(), result.stride());
+
+    auto kernel = sti::kernel::lowpass::make_kernel<float, 3>();
+    sti::filter::apply_kernel(result.get_slice(0), filtered_image.get_slice(0), kernel);
+    
+    auto new_color_image = sti::convert_image<std::uint8_t, 4>::to_color_image(filtered_image);
+
+    auto output_stream = aeon::streams::file_stream(
+        "DSC_7000_reencoded.png", aeon::streams::access_mode::write | aeon::streams::access_mode::truncate);
+    sti::codecs::png::encode(new_color_image, output_stream);
 }
 
+#if 0
 TEST(test_filter, test_mean_shift_filter)
 {
     auto path = "D:/dev/sti/data/DSC_7000.jpg"s;
