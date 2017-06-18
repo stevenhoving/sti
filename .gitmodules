@@ -1,20 +1,20 @@
 [submodule "dep/cmake"]
 	path = dep/cmake
-	url = ../libaeon-cmake.git
+	url = ../../aeon-engine/libaeon-cmake.git
 	branch = master
 [submodule "dep/googletest"]
 	path = dep/googletest
-	url = ../googletest.git
+	url = ../../aeon-external-dependencies/googletest.git
 	branch = submodule
 [submodule "dep/libaeon"]
 	path = dep/libaeon
-	url = ../libaeon.git
+	url = ../../aeon-engine/libaeon.git
 	branch = master
 [submodule "dep/zlib"]
 	path = dep/zlib
-	url = ../zlib.git
+	url = ../../aeon-external-dependencies/zlib.git
     branch = submodule
 [submodule "dep/png"]
 	path = dep/png
-	url = ../libpng.git
+	url = ../../aeon-external-dependencies/libpng.git
     branch = submodule
