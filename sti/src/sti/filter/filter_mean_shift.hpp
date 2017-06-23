@@ -104,7 +104,7 @@ void filter_mean_shift(const sti::plane<T> &src, sti::plane<T> &dst, const int s
 template <typename T>
 sti::plane<T> filter_mean_shift_copy(const sti::plane<T> &src, const int spatial_radius, const float color_distance)
 {
-    auto dst = sti::slice<T>(src.width(), src.height());
+    auto dst = sti::plane<T>(src.width(), src.height());
     filter_mean_shift(src, dst, spatial_radius, color_distance);
     return dst;
 }
