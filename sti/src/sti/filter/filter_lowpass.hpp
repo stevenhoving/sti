@@ -9,7 +9,7 @@ namespace filter
 {
 
 template <typename T>
-void filter_lowpass(const sti::slice<T> &src, sti::slice<T> &dst)
+void filter_lowpass(const sti::plane<T> &src, sti::plane<T> &dst)
 {
     // default to float kernels for now
     auto kernel = kernel::lowpass::make_kernel<float, 5>();
@@ -17,9 +17,9 @@ void filter_lowpass(const sti::slice<T> &src, sti::slice<T> &dst)
 }
 
 template <typename T>
-sti::slice<T> filter_lowpass_copy(const sti::slice<T> &src)
+sti::plane<T> filter_lowpass_copy(const sti::plane<T> &src)
 {
-    auto dst = sti::slice<T>(src.width(), src.height());
+    auto dst = sti::plane<T>(src.width(), src.height());
     filter_lowpass(src, dst);
     return dst;
 }

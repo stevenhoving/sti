@@ -9,7 +9,10 @@ add_unit_test_suite(
         test_histogram.cpp
         test_image.cpp
         test_png_codec.cpp
+        test_generator.cpp
         stop_watch.h
+        load_file_fixture.h
+        write_file_fixture.h
     INCLUDES
         ${CMAKE_BINARY_DIR}
     LIBRARIES sti
