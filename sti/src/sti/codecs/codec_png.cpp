@@ -1,7 +1,7 @@
 #include <sti/codecs/codec_png.h>
 #include <sti/codecs/detail/png_read_structs.hpp>
 #include <sti/codecs/detail/png_write_structs.hpp>
-#include <sti/color_image.hpp>
+#include <sti/interleaved_image.hpp>
 #include <aeon/common/compilers.h>
 #include <png.h>
 #include <array>
@@ -17,7 +17,7 @@ namespace codecs
 struct png_pixel_info
 {
     int bytes_per_pixel = 0;
-    color_image_format format = color_image_format::invalid;
+    interleaved_image_format format = interleaved_image_format::invalid;
 };
 
 static void __png_read_callback(png_structp png_ptr, png_bytep output_ptr, png_size_t output_size)
@@ -42,11 +42,11 @@ static auto __get_image_info(const int width, const int height, const int bit_de
     switch (color_type)
     {
         case PNG_COLOR_TYPE_RGB:
-            info.format = color_image_format::RGB;
+            info.format = interleaved_image_format::RGB;
             bytes_per_pixel = 3;
             break;
         case PNG_COLOR_TYPE_RGB_ALPHA:
-            info.format = color_image_format::RGBA;
+            info.format = interleaved_image_format::RGBA;
             bytes_per_pixel = 4;
             break;
         default:
@@ -67,19 +67,19 @@ static auto __get_png_pixel_format(const image_info &info)
 {
     switch (info.format)
     {
-        case color_image_format::RGB:
+        case interleaved_image_format::RGB:
             return PNG_COLOR_TYPE_RGB;
-        case color_image_format::RGBA:
+        case interleaved_image_format::RGBA:
             return PNG_COLOR_TYPE_RGB_ALPHA;
-        case color_image_format::BGR:
-        case color_image_format::YUV420:
-        case color_image_format::invalid:
+        case interleaved_image_format::BGR:
+        case interleaved_image_format::YUV420:
+        case interleaved_image_format::invalid:
         default:
             throw std::runtime_error("Unsupported image format.");
     }
 }
 
-auto png::decode(aeon::streams::stream &stream) -> color_image
+auto png::decode(aeon::streams::stream &stream) -> interleaved_image
 {
     // Read the header
     auto png_header = std::array<png_byte, PNG_HEADER_SIGNATURE_SIZE>();
@@ -144,10 +144,11 @@ auto png::decode(aeon::streams::stream &stream) -> color_image
     // Read the png into image_data through row_pointers
     png_read_image(png_structs.png_ptr(), row_pointers);
 
-    return color_image(__get_image_info(temp_width, temp_height, bit_depth, color_type), std::move(bitmap_buffer));
+    return interleaved_image(__get_image_info(temp_width, temp_height, bit_depth, color_type),
+                             std::move(bitmap_buffer));
 }
 
-void png::encode(const color_image &image, aeon::streams::stream &stream)
+void png::encode(const interleaved_image &image, aeon::streams::stream &stream)
 {
     auto png_structs = detail::png_write_structs();
 

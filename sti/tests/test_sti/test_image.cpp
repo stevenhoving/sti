@@ -17,29 +17,29 @@ TEST(test_image, default_stride_value)
 
 TEST_F(load_file_fixture, decode_and_convert_to_image_back_and_export_remove_plane_swap)
 {
-    auto result = sti::convert_image<std::uint8_t>::from_color_image(loaded_image);
+    auto result = sti::convert_image<std::uint8_t>::from_interleaved_image(loaded_image);
 
     result.swap_planes<0, 1, 2>();
 
-    auto new_color_image = sti::convert_image<std::uint8_t>::to_color_image(result);
+    auto new_interleaved_image = sti::convert_image<std::uint8_t>::to_interleaved_image(result);
 
-    write_result("DSC_7000_reencoded_remove_plane_3_swap.png", new_color_image);
+    write_result("DSC_7000_reencoded_remove_plane_3_swap.png", new_interleaved_image);
 }
 
 TEST_F(load_file_fixture, convert_to_grey_rearrange)
 {
-    auto result = sti::convert_image<std::uint8_t>::from_color_image(loaded_image);
+    auto result = sti::convert_image<std::uint8_t>::from_interleaved_image(loaded_image);
 
     result.rearrange_planes<0, 0, 0>();
 
-    auto new_color_image = sti::convert_image<std::uint8_t>::to_color_image(result);
+    auto new_interleaved_image = sti::convert_image<std::uint8_t>::to_interleaved_image(result);
 
-    write_result("DSC_7000_rearrange.png", new_color_image);
+    write_result("DSC_7000_rearrange.png", new_interleaved_image);
 }
 
 TEST_F(load_file_fixture, split_rgba)
 {
-    auto result = sti::convert_image<std::uint8_t>::from_color_image(loaded_image);
+    auto result = sti::convert_image<std::uint8_t>::from_interleaved_image(loaded_image);
 
     auto red_image = sti::image<std::uint8_t>(result.width(), result.height(), result.stride(), {result.get_plane(0)});
     auto green_image =
@@ -50,7 +50,7 @@ TEST_F(load_file_fixture, split_rgba)
     green_image.rearrange_planes<0, 0, 0>();
     blue_image.rearrange_planes<0, 0, 0>();
 
-    write_result("DSC_7000_red.png", sti::convert_image<std::uint8_t>::to_color_image(red_image));
-    write_result("DSC_7000_green.png", sti::convert_image<std::uint8_t>::to_color_image(green_image));
-    write_result("DSC_7000_blue.png", sti::convert_image<std::uint8_t>::to_color_image(blue_image));
+    write_result("DSC_7000_red.png", sti::convert_image<std::uint8_t>::to_interleaved_image(red_image));
+    write_result("DSC_7000_green.png", sti::convert_image<std::uint8_t>::to_interleaved_image(green_image));
+    write_result("DSC_7000_blue.png", sti::convert_image<std::uint8_t>::to_interleaved_image(blue_image));
 }
