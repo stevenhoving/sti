@@ -12,6 +12,7 @@ public:
     using pixel_type = pixel_type_t;
 
     plane();
+    explicit plane(const int width, const int height);
     explicit plane(const int width, const int height, const int stride);
     explicit plane(const int width, const int height, const int stride, std::vector<pixel_type_t> &&data);
     ~plane() = default;
@@ -51,6 +52,12 @@ plane<pixel_type_t>::plane()
     , height_(0)
     , stride_(0)
     , data_()
+{
+}
+
+template <typename pixel_type_t>
+plane<pixel_type_t>::plane(const int width, const int height)
+    : plane<pixel_type_t>(width, height, width)
 {
 }
 

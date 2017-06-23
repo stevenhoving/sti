@@ -7,6 +7,7 @@ set(STI_CORE_SOURCES
     src/sti/utility.hpp
     src/sti/image_detail.hpp
     src/sti/pixel_values.hpp
+    src/sti/generator.hpp
 )
 
 source_group(core FILES ${STI_CORE_SOURCES})
