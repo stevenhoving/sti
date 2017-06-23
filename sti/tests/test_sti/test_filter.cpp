@@ -4,7 +4,7 @@
 #include <sti/filter/filter.hpp>
 #include <sti/filter/filter_mean_shift.hpp>
 #include <sti/filter/filter_threshold_adaptive_bradley.hpp>
-#include <sti/color_image.hpp>
+#include <sti/interleaved_image.hpp>
 #include <sti/codecs/codec_png.h>
 #include <sti/convert/convert_image.hpp>
 #include <sti/kernel/kernel_lowpass.hpp>
@@ -30,17 +30,17 @@ sti::image<pixel_type_t> load_png(const char *path)
     auto stream = aeon::streams::file_stream(file_path);
     auto image = sti::codecs::png::decode(stream);
 
-    return sti::convert_image<pixel_type_t>::from_color_image(image);
+    return sti::convert_image<pixel_type_t>::from_interleaved_image(image);
 }
 
 template <typename pixel_type_t>
 void save_png(const sti::image<pixel_type_t> &image, const char *path)
 {
-    auto new_color_image = sti::convert_image<pixel_type_t>::to_color_image(image);
+    auto new_interleaved_image = sti::convert_image<pixel_type_t>::to_interleaved_image(image);
 
     auto output_stream =
         aeon::streams::file_stream(path, aeon::streams::access_mode::write | aeon::streams::access_mode::truncate);
-    sti::codecs::png::encode(new_color_image, output_stream);
+    sti::codecs::png::encode(new_interleaved_image, output_stream);
 }
 
 template <typename pixel_type_t, typename K>

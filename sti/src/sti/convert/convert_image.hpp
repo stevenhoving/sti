@@ -1,7 +1,7 @@
 #pragma once
 
 #include <sti/image.hpp>
-#include <sti/color_image.hpp>
+#include <sti/interleaved_image.hpp>
 #include <sti/pixel_values.hpp>
 #include <sti/utility.hpp>
 
@@ -12,47 +12,48 @@ template <typename pixel_type_t>
 class convert_image
 {
 public:
-    static auto from_color_image(const color_image &img) -> image<pixel_type_t>;
-    static auto to_color_image(const image<pixel_type_t> &image);
+    static auto from_interleaved_image(const interleaved_image &img) -> image<pixel_type_t>;
+    static auto to_interleaved_image(const image<pixel_type_t> &image);
 
 private:
-    static auto from_color_image_internal(const color_image &img, const int plane_count) -> image<pixel_type_t>;
-    static auto to_color_image_internal(const image<pixel_type_t> &image, const color_image_format format);
+    static auto from_interleaved_image_internal(const interleaved_image &img, const int plane_count)
+        -> image<pixel_type_t>;
+    static auto to_interleaved_image_internal(const image<pixel_type_t> &image, const interleaved_image_format format);
 };
 
 template <typename pixel_type_t>
-auto convert_image<pixel_type_t>::from_color_image(const color_image &img) -> image<pixel_type_t>
+auto convert_image<pixel_type_t>::from_interleaved_image(const interleaved_image &img) -> image<pixel_type_t>
 {
     switch (img.info().format)
     {
-        case color_image_format::RGB:
-            return from_color_image_internal(img, 3);
-        case color_image_format::RGBA:
-            return from_color_image_internal(img, 4);
-        case color_image_format::BGR:
-        case color_image_format::YUV420:
-        case color_image_format::invalid:
+        case interleaved_image_format::RGB:
+            return from_interleaved_image_internal(img, 3);
+        case interleaved_image_format::RGBA:
+            return from_interleaved_image_internal(img, 4);
+        case interleaved_image_format::BGR:
+        case interleaved_image_format::YUV420:
+        case interleaved_image_format::invalid:
         default:
             throw std::runtime_error("Unsupported image format.");
     }
 }
 
 template <typename pixel_type_t>
-auto convert_image<pixel_type_t>::to_color_image(const image<pixel_type_t> &image)
+auto convert_image<pixel_type_t>::to_interleaved_image(const image<pixel_type_t> &image)
 {
     switch (image.plane_count())
     {
         case 3:
-            return to_color_image_internal(image, color_image_format::RGB);
+            return to_interleaved_image_internal(image, interleaved_image_format::RGB);
         case 4:
-            return to_color_image_internal(image, color_image_format::RGBA);
+            return to_interleaved_image_internal(image, interleaved_image_format::RGBA);
         default:
             throw std::runtime_error("Unsupported image format.");
     }
 }
 
 template <typename pixel_type_t>
-auto convert_image<pixel_type_t>::from_color_image_internal(const color_image &img, const int plane_count)
+auto convert_image<pixel_type_t>::from_interleaved_image_internal(const interleaved_image &img, const int plane_count)
     -> image<pixel_type_t>
 {
     auto &info = img.info();
@@ -63,7 +64,7 @@ auto convert_image<pixel_type_t>::from_color_image_internal(const color_image &i
 
     auto &planes = result.get_planes();
 
-    constexpr auto max_src_value = pixel_values<color_image::pixel_type_t>::max_value();
+    constexpr auto max_src_value = pixel_values<interleaved_image::pixel_type_t>::max_value();
     constexpr auto max_dst_value = pixel_values<pixel_type_t>::max_value();
     const auto factor = double(max_dst_value) / max_src_value;
 
@@ -81,14 +82,14 @@ auto convert_image<pixel_type_t>::from_color_image_internal(const color_image &i
 }
 
 template <typename pixel_type_t>
-auto convert_image<pixel_type_t>::to_color_image_internal(const image<pixel_type_t> &image,
-                                                          const color_image_format format)
+auto convert_image<pixel_type_t>::to_interleaved_image_internal(const image<pixel_type_t> &image,
+                                                                const interleaved_image_format format)
 {
-    constexpr auto bits = (sizeof(color_image::pixel_type_t) << 3);
+    constexpr auto bits = (sizeof(interleaved_image::pixel_type_t) << 3);
     const auto plane_count = image.plane_count();
 
     auto info = image_info(image.width(), image.height(), bits, image.stride() * plane_count, format);
-    auto result = color_image(info);
+    auto result = interleaved_image(info);
 
     auto destination = result.data();
     const auto destination_size = info.height * info.stride;
@@ -96,8 +97,8 @@ auto convert_image<pixel_type_t>::to_color_image_internal(const image<pixel_type
     auto &planes = image.get_planes();
 
     constexpr auto max_src_value = pixel_values<pixel_type_t>::max_value();
-    constexpr auto min_dst_value = static_cast<double>(pixel_values<color_image::pixel_type_t>::min_value());
-    constexpr auto max_dst_value = static_cast<double>(pixel_values<color_image::pixel_type_t>::max_value());
+    constexpr auto min_dst_value = static_cast<double>(pixel_values<interleaved_image::pixel_type_t>::min_value());
+    constexpr auto max_dst_value = static_cast<double>(pixel_values<interleaved_image::pixel_type_t>::max_value());
     const auto factor = max_dst_value / max_src_value;
 
     auto index = 0;
@@ -106,7 +107,7 @@ auto convert_image<pixel_type_t>::to_color_image_internal(const image<pixel_type
         for (auto plane = 0; plane < plane_count; ++plane)
         {
             const auto plx = utility::clamp(planes[plane][index] * factor, min_dst_value, max_dst_value);
-            destination[offset + plane] = static_cast<color_image::pixel_type_t>(plx);
+            destination[offset + plane] = static_cast<interleaved_image::pixel_type_t>(plx);
         }
 
         ++index;
