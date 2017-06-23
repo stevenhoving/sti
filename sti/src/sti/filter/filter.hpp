@@ -1,6 +1,6 @@
 #pragma once
 
-#include <sti/slice.hpp>
+#include <sti/plane.hpp>
 #include <sti/pixel_values.hpp>
 #include <sti/utility.hpp>
 #include <algorithm>
@@ -17,7 +17,7 @@ template <typename T>
 class ifilter
 {
 public:
-    virtual T operator()(const sti::slice<T> &src, const int y, const int x) const = 0;
+    virtual T operator()(const sti::plane<T> &src, const int y, const int x) const = 0;
 
 private:
     ~ifilter() = default;
@@ -28,7 +28,7 @@ template <typename T>
 using clamp_type = typename std::conditional<std::is_integral<T>::value, int, T>::type;
 
 template <typename T, typename K>
-static void apply_kernel(const sti::slice<T> &src, sti::slice<T> &dst, const K &kernel)
+static void apply_kernel(const sti::plane<T> &src, sti::plane<T> &dst, const K &kernel)
 {
     const auto half_kernel_size = kernel.size() / 2;
     for (int y = 0; y < src.height(); ++y)

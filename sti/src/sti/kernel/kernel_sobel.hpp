@@ -42,11 +42,10 @@ namespace sobel_horizontal
 template <typename T, int Size>
 kernel<T, Size> make_kernel()
 {
-    static_assert(Size == 3,
-        "We only support horizontal sobel kernels of 3x3 for now");
+    static_assert(Size == 3, "We only support horizontal sobel kernels of 3x3 for now");
 
-    kernelv<T, Size> v{ { 1, 2, 1 } }; // smoothing kernel
-    kernelh<T, Size> h{ { 1, 0, -1 } }; // gradient kernel
+    kernelv<T, Size> v{{1, 2, 1}};  // smoothing kernel
+    kernelh<T, Size> h{{1, 0, -1}}; // gradient kernel
 
     auto kern = v * h;
     return kern;

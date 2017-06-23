@@ -32,7 +32,7 @@ kernel<T, Size> make_kernel(T Sigma = static_cast<T>(1.0))
         const auto r = static_cast<T>(x * x + y * y);
         T value = static_cast<T>((std::exp(-r / s)) / (sti::math::pi * s));
 
-        kern[y + (Size/2)][x + (Size / 2)] = value;
+        kern[y + (Size / 2)][x + (Size / 2)] = value;
         sum += value;
     }
 
