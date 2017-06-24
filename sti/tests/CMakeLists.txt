@@ -10,6 +10,7 @@ add_unit_test_suite(
         test_image.cpp
         test_png_codec.cpp
         test_generator.cpp
+        test_atlas.cpp
         stop_watch.h
         load_file_fixture.h
         write_file_fixture.h
