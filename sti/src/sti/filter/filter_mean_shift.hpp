@@ -123,6 +123,8 @@ public:
         rad_col2 = rad_col * rad_col;
     }
 
+    virtual ~mean_shift_filter() override = default;
+
     virtual T operator()(const sti::plane<T> &src, const int y, const int x) const override final
     {
         int width = src.width();
@@ -199,7 +201,6 @@ public:
 
         // \todo do clamp + narrow_cast if needed.
         return (uint8_t)Yc;
-        // return Yc;
     }
 
     // filter parameters

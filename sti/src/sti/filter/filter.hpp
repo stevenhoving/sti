@@ -18,14 +18,12 @@ class ifilter
 {
 public:
     virtual T operator()(const sti::plane<T> &src, const int y, const int x) const = 0;
-
-private:
-    ~ifilter() = default;
+    virtual ~ifilter() = default;
 };
 
 // \note this will get our selfs in a bad situation if somebody starts using 64 bit gray pixels
 template <typename T>
-using clamp_type = typename std::conditional<std::is_integral<T>::value, int, T>::type;
+using clamp_type = typename std::conditional_t<std::is_integral<T>::value, int, T>;
 
 template <typename T, typename K>
 static void apply_kernel(const sti::plane<T> &src, sti::plane<T> &dst, const K &kernel)

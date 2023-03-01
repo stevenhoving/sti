@@ -36,7 +36,7 @@ struct pixel_values<float>
 {
     static constexpr auto min_value()
     {
-        return static_cast<float>(0);
+        return static_cast<float>(0.0);
     }
 
     static constexpr auto max_value()

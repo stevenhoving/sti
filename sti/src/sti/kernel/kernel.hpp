@@ -11,9 +11,20 @@ template <typename T, int Size>
 class kernelh
 {
 public:
+    kernelh()
+        : data_({})
+    {
+
+    }
+
     kernelh(const std::array<T, Size> &kern)
         : data_(kern)
     {
+    }
+
+    T &operator[](int x)
+    {
+        return data_[x];
     }
 
     const T operator[](int x) const
@@ -29,9 +40,19 @@ template <typename T, int Size>
 class kernelv
 {
 public:
+    kernelv()
+        : data_({})
+    {
+    }
+
     kernelv(const std::array<T, Size> &kern)
         : data_(kern)
     {
+    }
+
+    T &operator[](int x)
+    {
+        return data_[x];
     }
 
     const T operator[](int y) const

@@ -2,6 +2,7 @@
 set(STI_CORE_SOURCES
     src/sti/image.hpp
     src/sti/plane.hpp
+    src/sti/plane_modifier.hpp
     src/sti/interleaved_image.hpp
     src/sti/interleaved_image_info.hpp
     src/sti/utility.hpp

@@ -45,9 +45,16 @@ kernel<T, Size> make_kernel()
     static_assert(Size == 3, "We only support horizontal sobel kernels of 3x3 for now");
 
     kernelv<T, Size> v{{1, 2, 1}};  // smoothing kernel
-    kernelh<T, Size> h{{1, 0, -1}}; // gradient kernel
+    //kernelh<T, Size> h{{0, 0, 0}};
+    kernelh<T, Size> h;;
+
+    // gradient kernel
+    for (int i = 0; i < Size; ++i)
+        h[i] = static_cast<float>((-Size / 2) + i);
 
     auto kern = v * h;
+    //kern.factor = 1.f / 8.f;
+
     return kern;
 }
 

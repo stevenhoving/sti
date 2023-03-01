@@ -30,11 +30,14 @@ public:
     auto data() -> pixel_type_t *;
     auto data() const -> const pixel_type_t *;
 
+    auto begin();
+    auto end();
+
     auto begin() const;
     auto end() const;
 
-    auto cbegin() const;
-    auto cend() const;
+    //auto cbegin() const;
+    //auto cend() const;
 
     auto operator[](const std::size_t offset) -> pixel_type_t &;
     auto operator[](const std::size_t offset) const -> const pixel_type_t &;
@@ -110,6 +113,18 @@ auto plane<pixel_type_t>::data() const -> const pixel_type_t *
 }
 
 template <typename pixel_type_t>
+auto plane<pixel_type_t>::begin()
+{
+    return data_.begin();
+}
+
+template <typename pixel_type_t>
+auto plane<pixel_type_t>::end()
+{
+    return data_.end();
+}
+
+template <typename pixel_type_t>
 auto plane<pixel_type_t>::begin() const
 {
     return data_.begin();
@@ -121,6 +136,7 @@ auto plane<pixel_type_t>::end() const
     return data_.end();
 }
 
+/*
 template <typename pixel_type_t>
 auto plane<pixel_type_t>::cbegin() const
 {
@@ -132,6 +148,7 @@ auto plane<pixel_type_t>::cend() const
 {
     return data_.cend();
 }
+*/
 
 template <typename pixel_type_t>
 auto plane<pixel_type_t>::operator[](const std::size_t offset) -> pixel_type_t &

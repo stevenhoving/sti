@@ -1,6 +1,7 @@
 #include <gtest/gtest.h>
 
 #include <sti/image.hpp>
+#include <sti/plane_modifier.hpp>
 #include <sti/filter/filter.hpp>
 #include <sti/filter/filter_mean_shift.hpp>
 #include <sti/filter/filter_threshold_adaptive_bradley.hpp>
@@ -83,6 +84,9 @@ TEST(test_filter, test_apply_emboss_filter)
     auto image = filter_test::load_png<std::uint8_t>("DSC_7000.png");
     auto kernel = sti::kernel::emboss::make_kernel<float, 3>();
     auto filtered_image = filter_test::apply_kernel(image, kernel);
+    sti::fill(filtered_image.get_plane(3),
+        sti::pixel_values<std::uint8_t>::max_value());
+
     filter_test::save_png<std::uint8_t>(filtered_image, "DSC_7000_emboss_filtered.png");
 }
 
@@ -99,6 +103,10 @@ TEST(test_filter, test_apply_sobel_filter)
     auto image = filter_test::load_png<std::uint8_t>("DSC_7000.png");
     auto kernel = sti::kernel::sobel_horizontal::make_kernel<float, 3>();
     auto filtered_image = filter_test::apply_kernel(image, kernel);
+
+    sti::draw<std::uint8_t>::fill(filtered_image.get_plane(3),
+        sti::pixel_values<std::uint8_t>::max_value());
+
     filter_test::save_png<std::uint8_t>(filtered_image, "DSC_7000_sobel_horizontal_filtered.png");
 }
 
@@ -106,6 +114,8 @@ TEST(test_filter, test_apply_mean_shift_filter)
 {
     auto image = filter_test::load_png<std::uint8_t>("DSC_7000.png");
     auto filtered_image = sti::image<std::uint8_t>(image.width(), image.height(), image.stride(), image.plane_count());
+    
+    auto henk = sti::filter::mean_shift_filter<std::uint8_t>(8, 60.f);
 
     sti::filter::filter_mean_shift(image.get_plane(0), filtered_image.get_plane(0), 8, 60.0f);
     sti::filter::filter_mean_shift(image.get_plane(1), filtered_image.get_plane(1), 8, 60.0f);
